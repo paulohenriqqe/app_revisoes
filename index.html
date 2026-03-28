@@ -23,7 +23,7 @@
       --blue:      #1d4ed8;
       --radius:    12px;
       --shadow:    0 1px 4px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04);
-      --crimson:   #dc143c; /* Nova cor para Int/Fin */
+      --crimson:   #dc143c;
       --crimson-lt:#fae6ea;
     }
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -31,7 +31,7 @@
     body {
       font-family: 'Nunito', sans-serif;
       background: var(--bg); color: var(--text);
-      min-height: 100vh; padding-bottom: 110px;
+      min-height: 100vh; padding-bottom: 40px; /* Reduzido pois não há mais FAB */
     }
 
     header {
@@ -44,16 +44,18 @@
     }
     h1 { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 800; }
 
-    .sync-btn {
-      width: 36px; height: 36px; border-radius: 50%;
-      border: 1.5px solid var(--border); background: var(--surface);
-      color: var(--muted); cursor: pointer; font-size: 17px;
-      display: flex; align-items: center; justify-content: center; transition: all 0.2s;
-      margin-right: 8px;
-      margin-top: -6px;
+    /* Novos Botões do Topo */
+    .header-actions { display: flex; gap: 8px; align-items: center; }
+    .btn-action {
+      display: flex; align-items: center; justify-content: center; gap: 6px;
+      height: 38px; padding: 0 14px; border-radius: 12px;
+      font-family: 'Nunito', sans-serif; font-weight: 700; font-size: 0.88rem;
+      border: 1.5px solid var(--border); background: var(--surface); color: var(--text);
+      cursor: pointer; transition: all 0.2s;
     }
-    .sync-btn:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-lt); }
-    .sync-btn.spinning { animation: spin 0.9s linear infinite; }
+    .btn-action.icon { padding: 0; width: 38px; font-size: 1.2rem; color: var(--muted); }
+    .btn-action:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-lt); }
+    .btn-action.icon.spinning { animation: spin 0.9s linear infinite; border-color: var(--accent); color: var(--accent); }
     @keyframes spin { to { transform: rotate(360deg); } }
 
     .stats { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; margin-bottom: 14px; }
@@ -78,7 +80,6 @@
     .sub-filtros::-webkit-scrollbar { display: none; }
     .sub-filtros.show { display: flex; }
     
-    /* Toggle buttons p/ múltipla escolha */
     .sub-pill {
       padding: 4px 12px; border-radius: 8px; border: 1.5px solid var(--border);
       background: var(--surface); color: var(--muted); font-size: 0.72rem; font-weight: 700;
@@ -91,8 +92,12 @@
     .card {
       background: var(--white); border: 1px solid var(--border);
       border-radius: var(--radius); box-shadow: var(--shadow);
-      overflow: hidden; animation: up 0.28s ease both;
+      overflow: hidden; animation: up 0.28s ease both; transition: opacity 0.2s;
     }
+    /* Estilo para itens já concluídos hoje (apagados) */
+    .card.dim { opacity: 0.6; }
+    .card.dim:hover { opacity: 1; }
+    
     @keyframes up { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
 
     .card-inner { display: flex; align-items: stretch; }
@@ -129,24 +134,20 @@
     }
     .etapa:not(.feito):hover { border-color: var(--accent); color: var(--accent); background: var(--accent-lt); }
 
-    /* Estilos base para estados */
     .etapa.pend-hoje  { border-color: #fbbf24; background: var(--amber-lt); color: var(--amber); }
     .etapa.atrasado   { border-color: #fca5a5; background: var(--red-lt);   color: var(--red); }
 
     .etapa.feito { border-color: #bbf7d0; background: var(--accent-lt); color: var(--accent); cursor: pointer; }
     
-    /* Nova Regra: Estilo Feito p/ Etapas Especiais (Int/Fin) -> Vermelho */
     .etapa.especial:not(.feito):hover { border-color: var(--crimson); color: var(--crimson); background: var(--crimson-lt); }
     .etapa.especial.feito { border-color: #fca5a5; background: var(--crimson-lt); color: var(--crimson); }
     
     .etapa.feito .txt-normal  { display: inline; }
     .etapa.feito .txt-desfazer { display: none; }
     
-    /* Hover desfazer base */
     .etapa.feito:hover { border-color: var(--red); background: var(--red-lt); color: var(--red); }
     .etapa.feito:hover .txt-normal  { display: none; }
     .etapa.feito:hover .txt-desfazer { display: inline; }
-    /* Hover desfazer p/ especial */
     .etapa.especial.feito:hover { border-color: var(--text); background: var(--border); color: var(--text); }
 
     .empty { text-align: center; padding: 56px 20px; color: var(--muted); }
@@ -157,17 +158,8 @@
     .skel-line { border-radius: 6px; background: linear-gradient(90deg, #ede9e2 25%, #f5f3ee 50%, #ede9e2 75%); background-size: 200% 100%; animation: shimmer 1.4s infinite; }
     @keyframes shimmer { to { background-position: -200% 0; } }
 
-    .fab {
-      position: fixed; bottom: 95px; right: 28px; width: 52px; height: 52px;
-      background: var(--accent); color: white; border-radius: 50%; border: none;
-      font-size: 26px; cursor: pointer; display: flex; align-items: center; justify-content: center;
-      box-shadow: 0 6px 20px rgba(45,106,79,0.32); transition: transform 0.2s, box-shadow 0.2s; z-index: 15;
-    }
-    .fab:hover  { transform: scale(1.08); box-shadow: 0 10px 28px rgba(45,106,79,0.42); }
-    .fab:active { transform: scale(0.94); }
-
     .toast {
-      position: fixed; bottom: 88px; left: 50%;
+      position: fixed; bottom: 40px; left: 50%;
       transform: translateX(-50%) translateY(8px);
       background: var(--text); color: #fff; padding: 9px 20px; border-radius: 30px;
       font-size: 0.83rem; font-weight: 600; opacity: 0; pointer-events: none;
@@ -227,7 +219,12 @@
   <header>
     <div class="header-row">
       <h1>📚 Revisões</h1>
-      <button class="sync-btn" id="syncBtn" onclick="sincronizar()" title="Atualizar">↻</button>
+      
+      <div class="header-actions">
+        <button class="btn-action" onclick="abrirSheet()">➕ Novo</button>
+        <button class="btn-action icon" id="syncBtn" onclick="sincronizar()" title="Atualizar">↻</button>
+      </div>
+
     </div>
     <div class="stats">
       <div class="stat"><div class="stat-n red"   id="numHoje">–</div><div class="stat-lbl">Para hoje</div></div>
@@ -252,7 +249,6 @@
   <div id="debugBox"></div>
   <div class="lista" id="lista"></div>
   <div class="toast" id="toast"></div>
-  <button class="fab" onclick="abrirSheet()">+</button>
 
   <div class="overlay" id="overlay" onclick="fecharBg(event)">
     <div class="sheet">
@@ -304,7 +300,8 @@
   </div>
 
   <script>
-    const API_URL   = "https://script.google.com/macros/s/AKfycbx0giuM53xhBwSTGu3A686KDcKOHSy-R1FUHuAPStAsau5rZOdzxHA5eSFpbeiEK90BXg/exec";
+    // COLAR SUA URL AQUI:
+    const API_URL   = "COLOQUE_AQUI_A_SUA_URL_DO_WEB_APP";
     const CACHE_KEY = "rev_cache_v8";
     const CACHE_TTL = 5 * 60 * 1000;
     const LABELS    = ['R1','R2','R3','R4', 'R. Int', 'R. Fin'];
@@ -312,11 +309,7 @@
     let dados = [];
     let filtroAtual = 'hoje';
     
-    // Estado dos Toggles (Inicia com "Falta Revisar" ativo)
-    let statesSubFiltro = {
-      falta_revisar: true,
-      ja_revisado: false
-    };
+    let statesSubFiltro = { falta_revisar: true, ja_revisado: false };
 
     window.addEventListener('DOMContentLoaded', () => {
       document.getElementById('inpData').value = hojeISO();
@@ -351,7 +344,7 @@
         dados = normalizar(raw);
         salvarCache(dados);
         atualizar();
-        if (!silencioso) toast("✅ Dados atualizados!");
+        if (!silencioso) toast("✅ Dados actualizados!");
       } catch (err) {
         if (!silencioso) toast("⚠️ Erro ao carregar");
         mostrarDebug('Erro: ' + err.message);
@@ -367,7 +360,7 @@
       return raw.map(row => ({
         id:      String(row.id || row.ID || ''),
         nome:    String(row.Conteudo || ''),
-        prog:    String(row.Status || '0/4'), // Max 4
+        prog:    String(row.Status || '0/4'),
         dataIni: parseData(row.Data_Ini),
         rev: [
           { data: parseData(row.Data_Rev1), status: String(row.Status_Rev1 || 'Pendente') },
@@ -405,16 +398,16 @@
       return toISO(d) > hojeISO() && toISO(d) <= toISO(lim);
     }
 
-    function isR4Completo(item) {
-      return item.rev.slice(0, 4).every(r => r.status === 'Feito');
-    }
+    function isR4Completo(item) { return item.rev.slice(0, 4).every(r => r.status === 'Feito'); }
 
+    // NOVA LÓGICA: Calcula atrasado, hoje e FEITO HOJE
     function estado(item) {
-      const pend = item.rev.slice(0, 4).filter(r => r.status !== 'Feito');
+      const core = item.rev.slice(0, 4);
       return {
-        atrasado: item.rev.slice(0,4).some(r => r.status !== 'Feito' && isAtrasado(r.data)),
-        hoje:     item.rev.slice(0,4).some(r => r.status !== 'Feito' && isHoje(r.data)),
-        completo: pend.length === 0
+        atrasado: core.some(r => r.status !== 'Feito' && isAtrasado(r.data)),
+        hoje:     core.some(r => r.status !== 'Feito' && isHoje(r.data)),
+        feitoHoje:core.some(r => r.status === 'Feito' && isHoje(r.data)),
+        completo: core.every(r => r.status === 'Feito')
       };
     }
 
@@ -432,43 +425,33 @@
       renderCards();
     }
 
-    // Toggle: Liga/desliga botão e força render
     function toggleFiltro(tipo) {
-      statesSubFiltro[tipo] = !statesSubFiltro[tipo]; // inverte estado
-      
+      statesSubFiltro[tipo] = !statesSubFiltro[tipo];
       const btnFalta = document.getElementById('btnFaltaRev');
       const btnJa    = document.getElementById('btnJaRev');
       
       if(statesSubFiltro.falta_revisar) btnFalta.classList.add('ativo'); else btnFalta.classList.remove('ativo');
       if(statesSubFiltro.ja_revisado)   btnJa.classList.add('ativo');    else btnJa.classList.remove('ativo');
-      
       renderCards();
     }
 
     function aplicarFiltro(lista) {
       if (filtroAtual === 'intermediaria' || filtroAtual === 'final') {
-        const isFinal = filtroAtual === 'final';
-        const revIndex = isFinal ? 5 : 4;
-
+        const revIndex = filtroAtual === 'final' ? 5 : 4;
         return lista.filter(item => {
-          const r4Ok = isR4Completo(item);
-          if (!r4Ok) return false; // Se não fez as 4, não entra aqui
+          if (!isR4Completo(item)) return false; 
           
           const isPendenteAtual = item.rev[revIndex].status !== 'Feito';
-          
-          // Se nenhum botão está ligado, não mostra nada
           if (!statesSubFiltro.falta_revisar && !statesSubFiltro.ja_revisado) return false;
-          // Se os dois estão ligados, mostra tudo dessa aba
           if (statesSubFiltro.falta_revisar && statesSubFiltro.ja_revisado) return true;
           
-          // Se só um está ligado
           if (statesSubFiltro.falta_revisar) return isPendenteAtual;
           if (statesSubFiltro.ja_revisado) return !isPendenteAtual;
         });
       }
 
       switch (filtroAtual) {
-        case 'hoje':      return lista.filter(i => { const e = estado(i); return e.hoje || e.atrasado; });
+        case 'hoje':      return lista.filter(i => { const e = estado(i); return e.hoje || e.atrasado || e.feitoHoje; });
         case 'atrasados': return lista.filter(i => estado(i).atrasado);
         case 'proximos':  return lista.filter(i => i.rev.some(r => r.data && r.status !== 'Feito' && emDias(r.data, 7)));
         default:          return lista;
@@ -485,22 +468,39 @@
     }
 
     function renderCards() {
-      const lista = aplicarFiltro(dados);
-      const el    = document.getElementById('lista');
+      let lista = aplicarFiltro(dados);
+      const el  = document.getElementById('lista');
+
+      // Ordenação para a aba Hoje: Joga os "Concluídos Hoje" para o final da lista
+      if (filtroAtual === 'hoje') {
+        lista.sort((a, b) => {
+          const ea = estado(a), eb = estado(b);
+          if (ea.atrasado && !eb.atrasado) return -1;
+          if (!ea.atrasado && eb.atrasado) return 1;
+          if (ea.hoje && !eb.hoje) return -1;
+          if (!ea.hoje && eb.hoje) return 1;
+          return 0;
+        });
+      }
 
       if (lista.length === 0) {
         el.innerHTML = `
           <div class="empty">
             <div class="empty-icon">${filtroAtual === 'hoje' ? '🎉' : '🔍'}</div>
-            <div class="empty-txt">${filtroAtual === 'hoje' ? 'Tudo em dia!<br/>Nada para rever hoje.' : 'Nenhum conteúdo.'}</div>
+            <div class="empty-txt">${filtroAtual === 'hoje' ? 'Tudo em dia!<br/>Nada pendente hoje.' : 'Nenhum conteúdo.'}</div>
           </div>`;
         return;
       }
 
       el.innerHTML = '';
       lista.forEach((item, idx) => {
-        const { atrasado, hoje, completo } = estado(item);
-        const cls = completo ? 'ok' : atrasado ? 'urgente' : hoje ? 'hoje' : '';
+        const { atrasado, hoje, completo, feitoHoje } = estado(item);
+        
+        // Verifica se a única coisa que tem de hoje é o que já foi concluído
+        const isConcluidoHoje = feitoHoje && !atrasado && !hoje;
+        
+        // Atribui classe "dim" se estiver concluído hoje
+        const cls = completo ? 'ok' : atrasado ? 'urgente' : hoje ? 'hoje' : isConcluidoHoje ? 'ok dim' : '';
 
         const etapasHTML = item.rev.map((r, i) => {
           const feito = r.status === 'Feito';
@@ -509,7 +509,6 @@
           const phoje = !isEspecial && !feito && r.data && isHoje(r.data);
           const patr  = !isEspecial && !feito && r.data && isAtrasado(r.data);
           
-          // Atribui classes (incluindo "especial" para cor vermelha)
           let ecls = '';
           if (feito) ecls += 'feito ';
           if (isEspecial) ecls += 'especial ';
@@ -543,7 +542,8 @@
                 <span class="badge bg-gray">Progresso: ${item.prog}</span>
                 ${atrasado            ? '<span class="badge bg-red">⚠️ Atrasado</span>'    : ''}
                 ${hoje && !atrasado   ? '<span class="badge bg-amber">📅 Hoje</span>'       : ''}
-                ${completo            ? '<span class="badge bg-green">✅ R1-R4 Completo</span>'   : ''}
+                ${isConcluidoHoje     ? '<span class="badge bg-green">✨ Concluído Hoje</span>' : ''}
+                ${completo && !isConcluidoHoje ? '<span class="badge bg-green">✅ R1-R4 Completo</span>' : ''}
               </div>
               <div class="etapas">${etapasHTML}</div>
             </div>
@@ -591,7 +591,7 @@
       const item = dados.find(d => d.id === id);
       if (!item) return;
       item.rev[etapa].status = novoStatus;
-      item.prog = item.rev.slice(0, 4).filter(r => r.status === 'Feito').length + '/4'; // Progresso /4
+      item.prog = item.rev.slice(0, 4).filter(r => r.status === 'Feito').length + '/4';
       salvarCache(dados);
       atualizar();
     }
