@@ -24,337 +24,186 @@
       --radius:    12px;
       --shadow:    0 1px 4px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04);
     }
-
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
       font-family: 'Nunito', sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      min-height: 100vh;
-      padding-bottom: 110px;
+      background: var(--bg); color: var(--text);
+      min-height: 100vh; padding-bottom: 110px;
     }
 
-    /* ── HEADER ── */
+    /* HEADER */
     header {
-      background: var(--white);
-      border-bottom: 1px solid var(--border);
-      padding: 16px 20px 0;
-      position: sticky;
-      top: 0;
-      z-index: 10;
+      background: var(--white); border-bottom: 1px solid var(--border);
+      padding: 16px 20px 0; position: sticky; top: 0; z-index: 10;
     }
-
     .header-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+      display: flex; justify-content: space-between; align-items: center;
       margin-bottom: 16px;
     }
-
-    h1 {
-      font-family: 'Playfair Display', serif;
-      font-size: 1.5rem;
-      font-weight: 800;
-      letter-spacing: -0.3px;
-    }
+    h1 { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 800; }
 
     .sync-btn {
-      width: 36px; height: 36px;
-      border-radius: 50%;
-      border: 1.5px solid var(--border);
-      background: var(--surface);
-      color: var(--muted);
-      cursor: pointer;
-      font-size: 17px;
-      display: flex; align-items: center; justify-content: center;
-      transition: all 0.2s;
+      width: 36px; height: 36px; border-radius: 50%;
+      border: 1.5px solid var(--border); background: var(--surface);
+      color: var(--muted); cursor: pointer; font-size: 17px;
+      display: flex; align-items: center; justify-content: center; transition: all 0.2s;
     }
     .sync-btn:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-lt); }
     .sync-btn.spinning { animation: spin 0.9s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* ── STATS ── */
-    .stats {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 8px;
-      margin-bottom: 14px;
-    }
-
-    .stat {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 10px 6px;
-      text-align: center;
-    }
-
-    .stat-n {
-      font-family: 'Playfair Display', serif;
-      font-size: 1.65rem;
-      font-weight: 700;
-      line-height: 1;
-    }
+    /* STATS */
+    .stats { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; margin-bottom: 14px; }
+    .stat { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 10px 6px; text-align: center; }
+    .stat-n { font-family: 'Playfair Display', serif; font-size: 1.65rem; font-weight: 700; line-height: 1; }
     .stat-n.red   { color: var(--red); }
     .stat-n.blue  { color: var(--blue); }
     .stat-n.green { color: var(--accent); }
+    .stat-lbl { font-size: 0.67rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; font-weight: 700; margin-top: 3px; }
 
-    .stat-lbl {
-      font-size: 0.67rem;
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      font-weight: 700;
-      margin-top: 3px;
-    }
-
-    /* ── PILLS ── */
-    .filtros {
-      display: flex;
-      gap: 6px;
-      overflow-x: auto;
-      padding-bottom: 14px;
-      scrollbar-width: none;
-    }
+    /* PILLS */
+    .filtros { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 14px; scrollbar-width: none; }
     .filtros::-webkit-scrollbar { display: none; }
-
     .pill {
-      padding: 6px 14px;
-      border-radius: 20px;
-      border: 1.5px solid var(--border);
-      background: transparent;
-      color: var(--muted);
-      font-family: 'Nunito', sans-serif;
-      font-weight: 700;
-      font-size: 0.78rem;
-      white-space: nowrap;
-      cursor: pointer;
-      transition: all 0.18s;
+      padding: 6px 14px; border-radius: 20px; border: 1.5px solid var(--border);
+      background: transparent; color: var(--muted); font-family: 'Nunito', sans-serif;
+      font-weight: 700; font-size: 0.78rem; white-space: nowrap; cursor: pointer; transition: all 0.18s;
     }
     .pill:hover { border-color: var(--accent); color: var(--accent); }
     .pill.ativo { background: var(--accent); border-color: var(--accent); color: #fff; }
 
-    /* ── LISTA ── */
-    .lista {
-      padding: 14px 16px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
+    /* LISTA */
+    .lista { padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; }
 
-    /* ── CARD ── */
+    /* CARD */
     .card {
-      background: var(--white);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      overflow: hidden;
-      animation: up 0.28s ease both;
+      background: var(--white); border: 1px solid var(--border);
+      border-radius: var(--radius); box-shadow: var(--shadow);
+      overflow: hidden; animation: up 0.28s ease both;
     }
-    @keyframes up {
-      from { opacity: 0; transform: translateY(8px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
+    @keyframes up { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
 
-    .card-inner {
-      display: flex;
-      align-items: stretch;
-    }
-
-    .stripe {
-      width: 4px;
-      flex-shrink: 0;
-      background: var(--border);
-    }
+    .card-inner { display: flex; align-items: stretch; }
+    .stripe { width: 4px; flex-shrink: 0; background: var(--border); }
     .card.urgente .stripe { background: var(--red); }
     .card.hoje    .stripe { background: var(--amber); }
     .card.ok      .stripe { background: var(--accent); }
 
-    .card-body {
-      flex: 1;
-      padding: 13px 14px 12px;
-      min-width: 0;
-    }
-
+    .card-body { flex: 1; padding: 13px 14px 12px; min-width: 0; }
     .card-titulo {
-      font-family: 'Playfair Display', serif;
-      font-size: 0.98rem;
-      font-weight: 700;
-      color: var(--text);
-      margin-bottom: 8px;
-      line-height: 1.35;
-      word-break: break-word;
+      font-family: 'Playfair Display', serif; font-size: 0.98rem; font-weight: 700;
+      color: var(--text); margin-bottom: 8px; line-height: 1.35; word-break: break-word;
     }
-
-    .card-badges {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 5px;
-      margin-bottom: 9px;
-    }
-
-    .badge {
-      font-size: 0.7rem;
-      font-weight: 700;
-      padding: 2px 9px;
-      border-radius: 20px;
-    }
+    .card-badges { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 9px; }
+    .badge { font-size: 0.7rem; font-weight: 700; padding: 2px 9px; border-radius: 20px; }
     .bg-gray  { background: #f0ede8; color: var(--muted); }
-    .bg-red   { background: var(--red-lt);   color: var(--red); }
-    .bg-amber { background: var(--amber-lt); color: var(--amber); }
+    .bg-red   { background: var(--red-lt);    color: var(--red); }
+    .bg-amber { background: var(--amber-lt);  color: var(--amber); }
     .bg-green { background: var(--accent-lt); color: var(--accent); }
 
-    /* ── ETAPAS ── */
-    .etapas {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 5px;
-    }
+    /* ETAPAS */
+    .etapas { display: flex; flex-wrap: wrap; gap: 5px; }
 
     .etapa {
-      font-size: 0.71rem;
-      font-weight: 700;
-      font-family: 'Nunito', sans-serif;
-      padding: 4px 10px;
-      border-radius: 7px;
-      border: 1.5px solid var(--border);
-      background: var(--surface);
-      color: var(--muted);
-      cursor: pointer;
-      transition: all 0.18s;
-      line-height: 1.4;
+      font-size: 0.71rem; font-weight: 700; font-family: 'Nunito', sans-serif;
+      padding: 4px 10px; border-radius: 7px;
+      border: 1.5px solid var(--border); background: var(--surface);
+      color: var(--muted); cursor: pointer; transition: all 0.18s; line-height: 1.4;
+      position: relative;
     }
-    .etapa:not([disabled]):hover { border-color: var(--accent); color: var(--accent); background: var(--accent-lt); }
+    .etapa:not(.feito):hover { border-color: var(--accent); color: var(--accent); background: var(--accent-lt); }
+
+    /* estados */
     .etapa.pend-hoje  { border-color: #fbbf24; background: var(--amber-lt); color: var(--amber); }
     .etapa.atrasado   { border-color: #fca5a5; background: var(--red-lt);   color: var(--red); }
-    .etapa.feito      { border-color: #bbf7d0; background: var(--accent-lt); color: var(--accent); opacity: 0.65; cursor: default; }
 
-    /* ── EMPTY / SKEL ── */
+    /* feito — mostra ✓ e ao hover vira "Desfazer?" */
+    .etapa.feito {
+      border-color: #bbf7d0; background: var(--accent-lt); color: var(--accent);
+      cursor: pointer;
+    }
+    .etapa.feito .txt-normal  { display: inline; }
+    .etapa.feito .txt-desfazer { display: none; }
+    .etapa.feito:hover { border-color: var(--red); background: var(--red-lt); color: var(--red); }
+    .etapa.feito:hover .txt-normal  { display: none; }
+    .etapa.feito:hover .txt-desfazer { display: inline; }
+
+    /* EMPTY / SKEL */
     .empty { text-align: center; padding: 56px 20px; color: var(--muted); }
     .empty-icon { font-size: 2.6rem; margin-bottom: 10px; }
     .empty-txt  { font-size: 0.88rem; line-height: 1.7; }
 
-    .skel {
-      background: var(--white);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 15px;
-      display: flex; flex-direction: column; gap: 10px;
-    }
-    .skel-line {
-      border-radius: 6px;
-      background: linear-gradient(90deg, #ede9e2 25%, #f5f3ee 50%, #ede9e2 75%);
-      background-size: 200% 100%;
-      animation: shimmer 1.4s infinite;
-    }
+    .skel { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); padding: 15px; display: flex; flex-direction: column; gap: 10px; }
+    .skel-line { border-radius: 6px; background: linear-gradient(90deg, #ede9e2 25%, #f5f3ee 50%, #ede9e2 75%); background-size: 200% 100%; animation: shimmer 1.4s infinite; }
     @keyframes shimmer { to { background-position: -200% 0; } }
 
-    /* ── FAB ── */
+    /* FAB */
     .fab {
-      position: fixed; bottom: 24px; right: 20px;
-      width: 52px; height: 52px;
-      background: var(--accent); color: white;
-      border-radius: 50%; border: none;
-      font-size: 26px; cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
-      box-shadow: 0 6px 20px rgba(45,106,79,0.32);
-      transition: transform 0.2s, box-shadow 0.2s;
-      z-index: 15;
+      position: fixed; bottom: 24px; right: 20px; width: 52px; height: 52px;
+      background: var(--accent); color: white; border-radius: 50%; border: none;
+      font-size: 26px; cursor: pointer; display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 6px 20px rgba(45,106,79,0.32); transition: transform 0.2s, box-shadow 0.2s; z-index: 15;
     }
     .fab:hover  { transform: scale(1.08); box-shadow: 0 10px 28px rgba(45,106,79,0.42); }
     .fab:active { transform: scale(0.94); }
 
-    /* ── TOAST ── */
+    /* TOAST */
     .toast {
       position: fixed; bottom: 88px; left: 50%;
       transform: translateX(-50%) translateY(8px);
-      background: var(--text); color: #fff;
-      padding: 9px 20px; border-radius: 30px;
-      font-size: 0.83rem; font-weight: 600;
-      opacity: 0; pointer-events: none;
+      background: var(--text); color: #fff; padding: 9px 20px; border-radius: 30px;
+      font-size: 0.83rem; font-weight: 600; opacity: 0; pointer-events: none;
       transition: all 0.25s; z-index: 50; white-space: nowrap;
     }
     .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-    /* ── BOTTOM SHEET ── */
+    /* BOTTOM SHEET */
     .overlay {
       display: none; position: fixed; inset: 0;
-      background: rgba(28,25,23,0.4);
-      backdrop-filter: blur(3px);
+      background: rgba(28,25,23,0.4); backdrop-filter: blur(3px);
       z-index: 20; align-items: flex-end; justify-content: center;
     }
     .overlay.show { display: flex; }
-
     .sheet {
-      background: var(--white);
-      border-radius: 20px 20px 0 0;
-      border-top: 1px solid var(--border);
-      padding: 20px 20px 44px;
-      width: 100%; max-width: 500px;
-      animation: slideUp 0.28s ease;
+      background: var(--white); border-radius: 20px 20px 0 0; border-top: 1px solid var(--border);
+      padding: 20px 20px 44px; width: 100%; max-width: 500px; animation: slideUp 0.28s ease;
     }
     @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
-
-    .handle {
-      width: 36px; height: 4px;
-      background: var(--border); border-radius: 4px;
-      margin: 0 auto 20px;
-    }
-
-    .sheet h2 {
-      font-family: 'Playfair Display', serif;
-      font-size: 1.2rem; font-weight: 800; margin-bottom: 18px;
-    }
+    .handle { width: 36px; height: 4px; background: var(--border); border-radius: 4px; margin: 0 auto 20px; }
+    .sheet h2 { font-family: 'Playfair Display', serif; font-size: 1.2rem; font-weight: 800; margin-bottom: 18px; }
 
     .field { margin-bottom: 13px; }
-
-    .field label {
-      display: block;
-      font-size: 0.7rem; font-weight: 700;
-      text-transform: uppercase; letter-spacing: 0.6px;
-      color: var(--muted); margin-bottom: 5px;
-    }
-
+    .field label { display: block; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px; color: var(--muted); margin-bottom: 5px; }
     .field input {
-      width: 100%; padding: 11px 13px;
-      border: 1.5px solid var(--border);
-      border-radius: 10px;
-      background: var(--surface);
-      color: var(--text);
-      font-size: 0.93rem; font-family: 'Nunito', sans-serif;
-      outline: none; transition: border-color 0.2s;
+      width: 100%; padding: 11px 13px; border: 1.5px solid var(--border);
+      border-radius: 10px; background: var(--surface); color: var(--text);
+      font-size: 0.93rem; font-family: 'Nunito', sans-serif; outline: none; transition: border-color 0.2s;
     }
     .field input:focus { border-color: var(--accent); background: var(--white); }
     .field input::placeholder { color: #c4bfb6; }
 
     .preview-box {
-      background: var(--accent-lt);
-      border: 1px solid #b7e4c7;
-      border-radius: 10px;
-      padding: 11px 14px;
-      font-size: 0.8rem; color: var(--accent); font-weight: 600;
+      background: var(--accent-lt); border: 1px solid #b7e4c7; border-radius: 10px;
+      padding: 11px 14px; font-size: 0.8rem; color: var(--accent); font-weight: 600;
       margin-top: 10px; display: none; line-height: 2;
     }
     .preview-box .lbl { opacity: 0.6; font-weight: 500; }
 
     .btn-save {
-      width: 100%; padding: 13px;
-      background: var(--accent); color: white;
-      border: none; border-radius: 12px;
-      font-family: 'Playfair Display', serif;
-      font-weight: 700; font-size: 1rem;
-      cursor: pointer; margin-top: 16px;
-      transition: all 0.2s;
+      width: 100%; padding: 13px; background: var(--accent); color: white;
+      border: none; border-radius: 12px; font-family: 'Playfair Display', serif;
+      font-weight: 700; font-size: 1rem; cursor: pointer; margin-top: 16px; transition: all 0.2s;
     }
     .btn-save:hover    { background: #235e45; }
     .btn-save:disabled { opacity: 0.5; cursor: not-allowed; }
+    .btn-cancel { width: 100%; padding: 11px; background: none; border: none; color: var(--muted); font-size: 0.87rem; font-weight: 600; cursor: pointer; margin-top: 6px; }
 
-    .btn-cancel {
-      width: 100%; padding: 11px;
-      background: none; border: none;
-      color: var(--muted); font-size: 0.87rem;
-      font-weight: 600; cursor: pointer; margin-top: 6px;
+    /* DEBUG */
+    #debugBox {
+      display: none; margin: 10px 16px;
+      background: #fff3cd; border: 1px solid #ffc107; border-radius: 10px;
+      padding: 12px; font-size: 0.78rem; color: #7d4e00; word-break: break-all; line-height: 1.6;
     }
   </style>
 </head>
@@ -365,22 +214,11 @@
       <h1>📚 Revisões</h1>
       <button class="sync-btn" id="syncBtn" onclick="sincronizar()" title="Atualizar">↻</button>
     </div>
-
     <div class="stats">
-      <div class="stat">
-        <div class="stat-n red"   id="numHoje">–</div>
-        <div class="stat-lbl">Para hoje</div>
-      </div>
-      <div class="stat">
-        <div class="stat-n blue"  id="numTotal">–</div>
-        <div class="stat-lbl">Conteúdos</div>
-      </div>
-      <div class="stat">
-        <div class="stat-n green" id="numOk">–</div>
-        <div class="stat-lbl">Completos</div>
-      </div>
+      <div class="stat"><div class="stat-n red"   id="numHoje">–</div><div class="stat-lbl">Para hoje</div></div>
+      <div class="stat"><div class="stat-n blue"  id="numTotal">–</div><div class="stat-lbl">Conteúdos</div></div>
+      <div class="stat"><div class="stat-n green" id="numOk">–</div><div class="stat-lbl">Completos</div></div>
     </div>
-
     <div class="filtros">
       <button class="pill ativo" onclick="filtrar(this,'hoje')">🔥 Hoje</button>
       <button class="pill" onclick="filtrar(this,'atrasados')">⚠️ Atrasados</button>
@@ -389,6 +227,7 @@
     </div>
   </header>
 
+  <div id="debugBox"></div>
   <div class="lista" id="lista"></div>
   <div class="toast" id="toast"></div>
   <button class="fab" onclick="abrirSheet()">+</button>
@@ -397,7 +236,6 @@
     <div class="sheet">
       <div class="handle"></div>
       <h2>Novo estudo</h2>
-
       <div class="field">
         <label>O que estudaste?</label>
         <input id="inpNome" type="text" placeholder="Ex: Termodinâmica — Cap. 4" />
@@ -406,7 +244,6 @@
         <label>Data do estudo</label>
         <input id="inpData" type="date" />
       </div>
-
       <div class="preview-box" id="previewBox">
         Revisões agendadas:<br/>
         <span class="lbl">R1 →</span> <strong id="p1"></strong> &nbsp;
@@ -414,19 +251,16 @@
         <span class="lbl">R3 →</span> <strong id="p3"></strong> &nbsp;
         <span class="lbl">R4 →</span> <strong id="p4"></strong>
       </div>
-
       <button class="btn-save" id="btnSalvar" onclick="salvar()">Guardar</button>
       <button class="btn-cancel" onclick="fecharSheet()">Cancelar</button>
     </div>
   </div>
 
   <script>
-    // ═══════════════════════════════════════════════
-    //  CONFIG — substitui pelo teu URL
-    // ═══════════════════════════════════════════════
     const API_URL   = "https://script.google.com/macros/s/AKfycbx0giuM53xhBwSTGu3A686KDcKOHSy-R1FUHuAPStAsau5rZOdzxHA5eSFpbeiEK90BXg/exec";
-    const CACHE_KEY = "rev_cache_v2";
+    const CACHE_KEY = "rev_cache_v4";
     const CACHE_TTL = 5 * 60 * 1000;
+    const LABELS    = ['R1 · +1d','R2 · +7d','R3 · +14d','R4 · +30d'];
 
     let dados = [];
     let filtroAtual = 'hoje';
@@ -435,8 +269,7 @@
     window.addEventListener('DOMContentLoaded', () => {
       document.getElementById('inpData').value = hojeISO();
       document.getElementById('inpData').addEventListener('change', mostrarPreview);
-      document.getElementById('inpNome').addEventListener('input', mostrarPreview);
-
+      document.getElementById('inpNome').addEventListener('input',  mostrarPreview);
       const cached = lerCache();
       if (cached) { dados = cached; atualizar(); }
       buscarDados(!!cached);
@@ -460,17 +293,20 @@
       const btn = document.getElementById('syncBtn');
       btn.classList.add('spinning');
       if (!silencioso) renderSkeleton();
-
       try {
         const res = await fetch(API_URL + "?t=" + Date.now());
         if (!res.ok) throw new Error('HTTP ' + res.status);
-        dados = normalizar(await res.json());
+        const raw = await res.json();
+        if (raw && raw.erro) { mostrarDebug('Erro do servidor: ' + raw.erro); return; }
+        if (!Array.isArray(raw)) { mostrarDebug('Resposta inesperada:\n' + JSON.stringify(raw).slice(0,300)); return; }
+        dados = normalizar(raw);
         salvarCache(dados);
         atualizar();
         if (!silencioso) toast("✅ Dados actualizados!");
       } catch (err) {
         console.error(err);
-        if (!silencioso) toast("⚠️ Sem ligação — a usar cache");
+        if (!silencioso) toast("⚠️ Erro ao carregar");
+        mostrarDebug('Erro: ' + err.message);
         if (dados.length === 0) renderErro();
       } finally {
         btn.classList.remove('spinning');
@@ -479,29 +315,41 @@
 
     function sincronizar() { buscarDados(false); }
 
-    // NORMALIZAR
+    // NORMALIZAR — aceita datas ISO (yyyy-MM-dd) e dd/MM/yyyy
     function normalizar(raw) {
-      return raw.map(row => {
-        const vals = Object.values(row);
-        const nome = row['Conteudo'] || row['📚 CONTEÚDO'] || row['CONTEÚDO'] || row['conteudo'] || '';
-        const id   = row['ID'] || row['Id'] || row['id'] || '';
-        const prog = row['📊 PROGRESSO'] || row['Progresso'] || row['progresso'] || '0/4';
-
-        const rev = [];
-        for (let i = 0; i < 4; i++) {
-          const colData   = vals[3 + i * 2] || '';
-          const colStatus = vals[4 + i * 2] || 'Pendente';
-          rev.push({ data: parseData(colData), status: String(colStatus) });
-        }
-        return { id, nome, prog, rev };
-      }).filter(r => r.nome);
+      return raw.map(row => ({
+        id:   String(row.id   || row.ID   || ''),
+        nome: String(row.Conteudo || ''),
+        prog: String(row.Status   || '0/4'),
+        rev: [
+          { data: parseData(row.Data_Rev1), status: String(row.Status_Rev1 || 'Pendente') },
+          { data: parseData(row.Data_Rev2), status: String(row.Status_Rev2 || 'Pendente') },
+          { data: parseData(row.Data_Rev3), status: String(row.Status_Rev3 || 'Pendente') },
+          { data: parseData(row.Data_Rev4), status: String(row.Status_Rev4 || 'Pendente') },
+        ]
+      })).filter(r => r.nome && r.id);
     }
 
     // DATAS
     function hojeISO() { return new Date().toISOString().split('T')[0]; }
-    function parseData(v) { if (!v) return null; const d = new Date(v); return isNaN(d) ? null : d; }
+
+    // Aceita: "2026-03-28" (ISO), "28/03/2026" (PT), Date objects
+    function parseData(v) {
+      if (!v) return null;
+      if (v instanceof Date) return isNaN(v) ? null : v;
+      const s = String(v).trim();
+      // formato dd/MM/yyyy
+      if (/^\d{2}\/\d{2}\/\d{4}$/.test(s)) {
+        const [dd, mm, yyyy] = s.split('/');
+        return new Date(yyyy + '-' + mm + '-' + dd + 'T12:00:00');
+      }
+      // formato ISO yyyy-MM-dd ou yyyy-MM-ddTHH:...
+      const d = new Date(s.length === 10 ? s + 'T12:00:00' : s);
+      return isNaN(d) ? null : d;
+    }
+
     function toISO(d)     { return d ? d.toISOString().split('T')[0] : ''; }
-    function fmt(d)       { return d ? d.toLocaleDateString('pt-PT', { day: '2-digit', month: '2-digit' }) : '–'; }
+    function fmt(d)       { return d ? d.toLocaleDateString('pt-PT', { day:'2-digit', month:'2-digit' }) : '–'; }
     function addDias(b,n) { const d = new Date(b); d.setDate(d.getDate() + n); return d; }
     function isHoje(d)    { return d ? toISO(d) === hojeISO() : false; }
     function isAtrasado(d){ return d ? toISO(d) < hojeISO()  : false; }
@@ -513,7 +361,7 @@
 
     // ESTADO CARD
     function estado(item) {
-      const pend     = item.rev.filter(r => r.status !== 'Feito');
+      const pend = item.rev.filter(r => r.status !== 'Feito');
       return {
         atrasado: pend.some(r => isAtrasado(r.data)),
         hoje:     pend.some(r => isHoje(r.data)),
@@ -549,8 +397,6 @@
     }
 
     // RENDER
-    const LABELS = ['R1 · +1d','R2 · +7d','R3 · +14d','R4 · +30d'];
-
     function renderCards() {
       const lista = aplicarFiltro(dados);
       const el    = document.getElementById('lista');
@@ -576,8 +422,17 @@
           const phoje = !feito && isHoje(r.data);
           const patr  = !feito && isAtrasado(r.data);
           const ecls  = feito ? 'feito' : phoje ? 'pend-hoje' : patr ? 'atrasado' : '';
-          const lbl   = feito ? '✓ ' + LABELS[i] : LABELS[i] + ' ' + fmt(r.data);
-          return `<button class="etapa ${ecls}" onclick="marcarFeito('${item.id}',${i})" ${feito ? 'disabled' : ''}>${lbl}</button>`;
+
+          if (feito) {
+            // Botão feito: hover mostra "Desfazer?"
+            return `<button class="etapa feito" onclick="desfazerRevisao('${item.id}',${i})">
+              <span class="txt-normal">✓ ${LABELS[i]}</span>
+              <span class="txt-desfazer">↩ Desfazer?</span>
+            </button>`;
+          } else {
+            const lbl = LABELS[i] + ' ' + fmt(r.data);
+            return `<button class="etapa ${ecls}" onclick="marcarFeito('${item.id}',${i})">${lbl}</button>`;
+          }
         }).join('');
 
         const card = document.createElement('div');
@@ -590,9 +445,9 @@
               <div class="card-titulo">${item.nome}</div>
               <div class="card-badges">
                 <span class="badge bg-gray">Progresso: ${item.prog}</span>
-                ${atrasado  ? '<span class="badge bg-red">⚠️ Atrasado</span>'    : ''}
-                ${hoje && !atrasado ? '<span class="badge bg-amber">📅 Hoje</span>' : ''}
-                ${completo  ? '<span class="badge bg-green">✅ Completo</span>'   : ''}
+                ${atrasado           ? '<span class="badge bg-red">⚠️ Atrasado</span>'    : ''}
+                ${hoje && !atrasado  ? '<span class="badge bg-amber">📅 Hoje</span>'       : ''}
+                ${completo           ? '<span class="badge bg-green">✅ Completo</span>'   : ''}
               </div>
               <div class="etapas">${etapasHTML}</div>
             </div>
@@ -614,26 +469,46 @@
       document.getElementById('lista').innerHTML = `
         <div class="empty">
           <div class="empty-icon">📡</div>
-          <div class="empty-txt">Sem ligação e sem cache.<br/>Verifica o URL do Apps Script.</div>
+          <div class="empty-txt">Sem ligação e sem cache.<br/>Verifica o URL e o Deploy.</div>
         </div>`;
+    }
+
+    function mostrarDebug(msg) {
+      const box = document.getElementById('debugBox');
+      box.style.display = 'block';
+      box.innerHTML = '⚠️ <strong>Diagnóstico:</strong><br/>' + msg.replace(/\n/g,'<br/>');
     }
 
     // MARCAR FEITO (optimistic)
     async function marcarFeito(id, etapa) {
+      alterarStatus(id, etapa, 'Feito');
+      toast("✅ Revisão marcada como feita!");
+      await enviarStatus(id, etapa, 'marcar');
+    }
+
+    // DESFAZER (optimistic)
+    async function desfazerRevisao(id, etapa) {
+      alterarStatus(id, etapa, 'Pendente');
+      toast("↩ Revisão desfeita!");
+      await enviarStatus(id, etapa, 'desfazer');
+    }
+
+    function alterarStatus(id, etapa, novoStatus) {
       const item = dados.find(d => d.id === id);
       if (!item) return;
-      item.rev[etapa].status = 'Feito';
+      item.rev[etapa].status = novoStatus;
       item.prog = item.rev.filter(r => r.status === 'Feito').length + '/4';
       salvarCache(dados);
       atualizar();
-      toast("✅ Revisão marcada como feita!");
+    }
 
+    async function enviarStatus(id, etapa, action) {
       try {
         await fetch(API_URL, {
           method: 'POST',
           mode: 'no-cors',
           headers: { 'Content-Type': 'text/plain' },
-          body: JSON.stringify({ action: "marcar", id, etapa })
+          body: JSON.stringify({ action, id, etapa })
         });
       } catch { toast("⚠️ Erro ao guardar no servidor"); }
     }
@@ -653,8 +528,8 @@
       const box     = document.getElementById('previewBox');
       if (!dataVal || !nomeVal) { box.style.display = 'none'; return; }
       const base = new Date(dataVal + 'T12:00:00');
-      [1, 7, 14, 30].forEach((n, i) => {
-        document.getElementById('p' + (i + 1)).textContent = fmt(addDias(base, n));
+      [1,7,14,30].forEach((n,i) => {
+        document.getElementById('p'+(i+1)).textContent = fmt(addDias(base,n));
       });
       box.style.display = 'block';
     }
@@ -666,28 +541,24 @@
       if (!nome || !data) { toast("⚠️ Preenche os dois campos!"); return; }
 
       const btn = document.getElementById('btnSalvar');
-      btn.disabled = true;
-      btn.textContent = 'A guardar…';
+      btn.disabled = true; btn.textContent = 'A guardar…';
 
       try {
         await fetch(API_URL, {
-          method: 'POST',
-          mode: 'no-cors',
+          method: 'POST', mode: 'no-cors',
           headers: { 'Content-Type': 'text/plain' },
           body: JSON.stringify({ action: "adicionar", nome, data })
         });
-
-        toast("✅ Conteúdo adicionado! A sincronizar…");
+        toast("✅ Enviado! A sincronizar…");
         fecharSheet();
         document.getElementById('inpNome').value = '';
         document.getElementById('inpData').value = hojeISO();
         document.getElementById('previewBox').style.display = 'none';
         setTimeout(() => buscarDados(true), 2000);
       } catch {
-        toast("❌ Erro de rede. Verifica a ligação.");
+        toast("❌ Erro de rede.");
       } finally {
-        btn.disabled = false;
-        btn.textContent = 'Guardar';
+        btn.disabled = false; btn.textContent = 'Guardar';
       }
     }
 
