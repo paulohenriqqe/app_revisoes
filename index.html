@@ -31,7 +31,7 @@
     body {
       font-family: 'Nunito', sans-serif;
       background: var(--bg); color: var(--text);
-      min-height: 100vh; padding-bottom: 40px; /* Reduzido pois não há mais FAB */
+      min-height: 100vh; padding-bottom: 40px; 
     }
 
     header {
@@ -44,7 +44,6 @@
     }
     h1 { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 800; }
 
-    /* Novos Botões do Topo */
     .header-actions { display: flex; gap: 8px; align-items: center; }
     .btn-action {
       display: flex; align-items: center; justify-content: center; gap: 6px;
@@ -86,6 +85,7 @@
       cursor: pointer; white-space: nowrap; transition: 0.2s; opacity: 0.6;
     }
     .sub-pill.ativo { opacity: 1; border-color: var(--blue); color: var(--blue); background: #eff6ff; }
+    .sub-pill.green-ativo.ativo { opacity: 1; border-color: var(--accent); color: var(--accent); background: var(--accent-lt); }
 
     .lista { padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; }
 
@@ -94,7 +94,6 @@
       border-radius: var(--radius); box-shadow: var(--shadow);
       overflow: hidden; animation: up 0.28s ease both; transition: opacity 0.2s;
     }
-    /* Estilo para itens já concluídos hoje (apagados) */
     .card.dim { opacity: 0.6; }
     .card.dim:hover { opacity: 1; }
     
@@ -219,12 +218,10 @@
   <header>
     <div class="header-row">
       <h1>📚 Revisões</h1>
-      
       <div class="header-actions">
         <button class="btn-action" onclick="abrirSheet()">➕ Novo</button>
         <button class="btn-action icon" id="syncBtn" onclick="sincronizar()" title="Atualizar">↻</button>
       </div>
-
     </div>
     <div class="stats">
       <div class="stat"><div class="stat-n red"   id="numHoje">–</div><div class="stat-lbl">Para hoje</div></div>
@@ -243,6 +240,11 @@
     <div class="sub-filtros" id="subFiltros">
       <button class="sub-pill ativo" id="btnFaltaRev" onclick="toggleFiltro('falta_revisar')">⏳ Falta Revisar</button>
       <button class="sub-pill" id="btnJaRev" onclick="toggleFiltro('ja_revisado')">✅ Já Revisado</button>
+    </div>
+    
+    <div class="sub-filtros show" id="subFiltrosHoje">
+      <button class="sub-pill green-ativo ativo" onclick="mudarSubFiltroHoje(this, 'pendentes')">⏳ Só Pendentes</button>
+      <button class="sub-pill green-ativo" onclick="mudarSubFiltroHoje(this, 'todos')">✨ Incluir Concluídos</button>
     </div>
   </header>
 
@@ -309,7 +311,9 @@
     let dados = [];
     let filtroAtual = 'hoje';
     
+    // Estados dos toggles
     let statesSubFiltro = { falta_revisar: true, ja_revisado: false };
+    let subFiltroHoje = 'pendentes'; // Controla o sub-filtro do Hoje
 
     window.addEventListener('DOMContentLoaded', () => {
       document.getElementById('inpData').value = hojeISO();
@@ -400,7 +404,6 @@
 
     function isR4Completo(item) { return item.rev.slice(0, 4).every(r => r.status === 'Feito'); }
 
-    // NOVA LÓGICA: Calcula atrasado, hoje e FEITO HOJE
     function estado(item) {
       const core = item.rev.slice(0, 4);
       return {
@@ -417,14 +420,20 @@
       filtroAtual = tipo;
       
       const sub = document.getElementById('subFiltros');
+      const subHoje = document.getElementById('subFiltrosHoje');
+      
+      sub.classList.remove('show');
+      subHoje.classList.remove('show');
+      
       if (tipo === 'intermediaria' || tipo === 'final') {
         sub.classList.add('show');
-      } else {
-        sub.classList.remove('show');
+      } else if (tipo === 'hoje') {
+        subHoje.classList.add('show');
       }
       renderCards();
     }
 
+    // Toggle para Int/Final
     function toggleFiltro(tipo) {
       statesSubFiltro[tipo] = !statesSubFiltro[tipo];
       const btnFalta = document.getElementById('btnFaltaRev');
@@ -432,6 +441,14 @@
       
       if(statesSubFiltro.falta_revisar) btnFalta.classList.add('ativo'); else btnFalta.classList.remove('ativo');
       if(statesSubFiltro.ja_revisado)   btnJa.classList.add('ativo');    else btnJa.classList.remove('ativo');
+      renderCards();
+    }
+    
+    // Toggle para Hoje
+    function mudarSubFiltroHoje(el, tipo) {
+      document.getElementById('subFiltrosHoje').querySelectorAll('.sub-pill').forEach(p => p.classList.remove('ativo'));
+      el.classList.add('ativo');
+      subFiltroHoje = tipo;
       renderCards();
     }
 
@@ -451,7 +468,12 @@
       }
 
       switch (filtroAtual) {
-        case 'hoje':      return lista.filter(i => { const e = estado(i); return e.hoje || e.atrasado || e.feitoHoje; });
+        case 'hoje':      
+          return lista.filter(i => { 
+            const e = estado(i); 
+            if (subFiltroHoje === 'pendentes') return e.hoje || e.atrasado; 
+            return e.hoje || e.atrasado || e.feitoHoje; 
+          });
         case 'atrasados': return lista.filter(i => estado(i).atrasado);
         case 'proximos':  return lista.filter(i => i.rev.some(r => r.data && r.status !== 'Feito' && emDias(r.data, 7)));
         default:          return lista;
@@ -459,6 +481,7 @@
     }
 
     function atualizar() {
+      // O contador "Para Hoje" sempre mostra APENAS os pendentes.
       const comHoje   = dados.filter(i => { const e = estado(i); return e.hoje || e.atrasado; });
       const completos = dados.filter(i => estado(i).completo);
       document.getElementById('numHoje').textContent  = comHoje.length;
@@ -471,7 +494,6 @@
       let lista = aplicarFiltro(dados);
       const el  = document.getElementById('lista');
 
-      // Ordenação para a aba Hoje: Joga os "Concluídos Hoje" para o final da lista
       if (filtroAtual === 'hoje') {
         lista.sort((a, b) => {
           const ea = estado(a), eb = estado(b);
@@ -496,10 +518,7 @@
       lista.forEach((item, idx) => {
         const { atrasado, hoje, completo, feitoHoje } = estado(item);
         
-        // Verifica se a única coisa que tem de hoje é o que já foi concluído
         const isConcluidoHoje = feitoHoje && !atrasado && !hoje;
-        
-        // Atribui classe "dim" se estiver concluído hoje
         const cls = completo ? 'ok' : atrasado ? 'urgente' : hoje ? 'hoje' : isConcluidoHoje ? 'ok dim' : '';
 
         const etapasHTML = item.rev.map((r, i) => {
