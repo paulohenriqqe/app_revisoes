@@ -334,7 +334,7 @@
         dados = normalizar(raw);
         salvarCache(dados);
         atualizar();
-        if (!silencioso) toast("✅ Dados actualizados!");
+        if (!silencioso) toast("✅ Dados atualizados!");
       } catch (err) {
         if (!silencioso) toast("⚠️ Erro ao carregar");
         mostrarDebug('Erro: ' + err.message);
