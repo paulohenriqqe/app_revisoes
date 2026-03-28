@@ -70,6 +70,18 @@
     .pill:hover { border-color: var(--accent); color: var(--accent); }
     .pill.ativo { background: var(--accent); border-color: var(--accent); color: #fff; }
 
+    /* Novo: Sub-filtros para Intermediária e Final */
+    .sub-filtros { display: none; gap: 6px; overflow-x: auto; padding-bottom: 14px; margin-top: -4px; scrollbar-width: none; }
+    .sub-filtros::-webkit-scrollbar { display: none; }
+    .sub-filtros.show { display: flex; }
+    .sub-pill {
+      padding: 4px 12px; border-radius: 8px; border: 1px solid var(--border);
+      background: var(--surface); color: var(--muted); font-size: 0.72rem; font-weight: 700;
+      cursor: pointer; white-space: nowrap; transition: 0.2s;
+    }
+    .sub-pill:hover { border-color: var(--accent); color: var(--accent); }
+    .sub-pill.ativo { background: var(--accent-lt); border-color: var(--accent); color: var(--accent); }
+
     .lista { padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; }
 
     .card {
@@ -117,8 +129,7 @@
     .etapa.atrasado   { border-color: #fca5a5; background: var(--red-lt);   color: var(--red); }
 
     .etapa.feito {
-      border-color: #bbf7d0; background: var(--accent-lt); color: var(--accent);
-      cursor: pointer;
+      border-color: #bbf7d0; background: var(--accent-lt); color: var(--accent); cursor: pointer;
     }
     .etapa.feito .txt-normal  { display: inline; }
     .etapa.feito .txt-desfazer { display: none; }
@@ -175,7 +186,6 @@
       font-size: 0.93rem; font-family: 'Nunito', sans-serif; outline: none; transition: border-color 0.2s;
     }
     .field input:focus { border-color: var(--accent); background: var(--white); }
-    .field input::placeholder { color: #c4bfb6; }
     .grid-dates { display: grid; grid-template-columns: 1fr 1fr; gap: 0 12px; }
 
     .preview-box {
@@ -193,12 +203,7 @@
     .btn-save:hover    { background: #235e45; }
     .btn-save:disabled { opacity: 0.5; cursor: not-allowed; }
     .btn-cancel { width: 100%; padding: 11px; background: none; border: none; color: var(--muted); font-size: 0.87rem; font-weight: 600; cursor: pointer; margin-top: 6px; }
-
-    #debugBox {
-      display: none; margin: 10px 16px;
-      background: #fff3cd; border: 1px solid #ffc107; border-radius: 10px;
-      padding: 12px; font-size: 0.78rem; color: #7d4e00; word-break: break-all; line-height: 1.6;
-    }
+    #debugBox { display: none; margin: 10px 16px; background: #fff3cd; border: 1px solid #ffc107; border-radius: 10px; padding: 12px; font-size: 0.78rem; color: #7d4e00; }
   </style>
 </head>
 <body>
@@ -220,6 +225,12 @@
       <button class="pill" onclick="filtrar(this,'intermediaria')">🔄 Intermediária</button>
       <button class="pill" onclick="filtrar(this,'final')">🏆 Final</button>
       <button class="pill" onclick="filtrar(this,'todos')">Todos</button>
+    </div>
+    
+    <div class="sub-filtros" id="subFiltros">
+      <button class="sub-pill ativo" onclick="mudarSubFiltro(this, 'pendente')">⏳ Pendentes (Prontas p/ rever)</button>
+      <button class="sub-pill" onclick="mudarSubFiltro(this, 'r4_ok')">✅ Já fizeram as 4 revisões</button>
+      <button class="sub-pill" onclick="mudarSubFiltro(this, 'todos')">📚 Todos os conteúdos</button>
     </div>
   </header>
 
@@ -243,7 +254,7 @@
       <div class="preview-box" id="previewBox">
         Revisões agendadas:<br/>
         <span class="lbl">R1 →</span> <strong id="p1"></strong> &nbsp;
-        <span class="lbl">R2 →</span> <strong id="p2"></strong> &nbsp;
+        <span class="lbl">R2 →</span> <strong id="p2"></strong><br/>
         <span class="lbl">R3 →</span> <strong id="p3"></strong> &nbsp;
         <span class="lbl">R4 →</span> <strong id="p4"></strong>
       </div>
@@ -269,8 +280,6 @@
         <div class="field"><label>Rev 2</label><input id="editD2" type="date"/></div>
         <div class="field"><label>Rev 3</label><input id="editD3" type="date"/></div>
         <div class="field"><label>Rev 4</label><input id="editD4" type="date"/></div>
-        <div class="field"><label>Intermediária</label><input id="editDInt" type="date"/></div>
-        <div class="field"><label>Final</label><input id="editDFin" type="date"/></div>
       </div>
 
       <button class="btn-save" id="btnSalvarEdit" onclick="salvarEditar()">Guardar Alterações</button>
@@ -280,12 +289,13 @@
 
   <script>
     const API_URL   = "https://script.google.com/macros/s/AKfycbx0giuM53xhBwSTGu3A686KDcKOHSy-R1FUHuAPStAsau5rZOdzxHA5eSFpbeiEK90BXg/exec";
-    const CACHE_KEY = "rev_cache_v5";
+    const CACHE_KEY = "rev_cache_v6";
     const CACHE_TTL = 5 * 60 * 1000;
     const LABELS    = ['R1','R2','R3','R4', 'R. Int', 'R. Fin'];
 
     let dados = [];
     let filtroAtual = 'hoje';
+    let subFiltroAtual = 'pendente'; // Padrão: mostra só o que está pronto para revisar
 
     window.addEventListener('DOMContentLoaded', () => {
       document.getElementById('inpData').value = hojeISO();
@@ -343,8 +353,8 @@
           { data: parseData(row.Data_Rev2), status: String(row.Status_Rev2 || 'Pendente') },
           { data: parseData(row.Data_Rev3), status: String(row.Status_Rev3 || 'Pendente') },
           { data: parseData(row.Data_Rev4), status: String(row.Status_Rev4 || 'Pendente') },
-          { data: parseData(row.Data_RevInt), status: String(row.Status_RevInt || 'Pendente') },
-          { data: parseData(row.Data_RevFinal), status: String(row.Status_RevFinal || 'Pendente') }
+          { data: null, status: String(row.Status_RevInt || 'Pendente') },
+          { data: null, status: String(row.Status_RevFinal || 'Pendente') }
         ]
       })).filter(r => r.nome && r.id);
     }
@@ -364,7 +374,7 @@
     }
 
     function toISO(d)    { return d ? d.toISOString().split('T')[0] : ''; }
-    function fmt(d)      { return d ? d.toLocaleDateString('pt-PT', { day:'2-digit', month:'2-digit' }) : 'S/ Data'; }
+    function fmt(d)      { return d ? d.toLocaleDateString('pt-PT', { day:'2-digit', month:'2-digit' }) : ''; }
     function addDias(b,n){ const d = new Date(b); d.setDate(d.getDate() + n); return d; }
     function isHoje(d)   { return d ? toISO(d) === hojeISO() : false; }
     function isAtrasado(d){ return d ? toISO(d) < hojeISO()  : false; }
@@ -374,7 +384,6 @@
       return toISO(d) > hojeISO() && toISO(d) <= toISO(lim);
     }
 
-    // Verifica se as R1 até R4 já foram completas
     function isR4Completo(item) {
       return item.rev.slice(0, 4).every(r => r.status === 'Feito');
     }
@@ -382,8 +391,8 @@
     function estado(item) {
       const pend = item.rev.filter(r => r.status !== 'Feito');
       return {
-        atrasado: pend.some(r => isAtrasado(r.data)),
-        hoje:     pend.some(r => isHoje(r.data)),
+        atrasado: item.rev.slice(0,4).some(r => r.status !== 'Feito' && isAtrasado(r.data)),
+        hoje:     item.rev.slice(0,4).some(r => r.status !== 'Feito' && isHoje(r.data)),
         completo: pend.length === 0
       };
     }
@@ -392,17 +401,44 @@
       document.querySelectorAll('.pill').forEach(p => p.classList.remove('ativo'));
       el.classList.add('ativo');
       filtroAtual = tipo;
+      
+      const sub = document.getElementById('subFiltros');
+      if (tipo === 'intermediaria' || tipo === 'final') {
+        sub.classList.add('show');
+      } else {
+        sub.classList.remove('show');
+      }
+      renderCards();
+    }
+
+    function mudarSubFiltro(el, subTipo) {
+      document.querySelectorAll('.sub-pill').forEach(p => p.classList.remove('ativo'));
+      el.classList.add('ativo');
+      subFiltroAtual = subTipo;
       renderCards();
     }
 
     function aplicarFiltro(lista) {
+      if (filtroAtual === 'intermediaria' || filtroAtual === 'final') {
+        const isFinal = filtroAtual === 'final';
+        const revIndex = isFinal ? 5 : 4;
+
+        return lista.filter(item => {
+          const r4Ok = isR4Completo(item);
+          const pendenteAtual = item.rev[revIndex].status !== 'Feito';
+
+          if (subFiltroAtual === 'todos') return true;
+          if (subFiltroAtual === 'r4_ok') return r4Ok;
+          if (subFiltroAtual === 'pendente') return r4Ok && pendenteAtual;
+          return true;
+        });
+      }
+
       switch (filtroAtual) {
-        case 'hoje':          return lista.filter(i => { const e = estado(i); return e.hoje || e.atrasado; });
-        case 'atrasados':     return lista.filter(i => estado(i).atrasado);
-        case 'proximos':      return lista.filter(i => i.rev.some(r => r.status !== 'Feito' && emDias(r.data, 7)));
-        case 'intermediaria': return lista.filter(i => isR4Completo(i) && i.rev[4].status !== 'Feito');
-        case 'final':         return lista.filter(i => isR4Completo(i) && i.rev[4].status === 'Feito' && i.rev[5].status !== 'Feito');
-        default:              return lista;
+        case 'hoje':      return lista.filter(i => { const e = estado(i); return e.hoje || e.atrasado; });
+        case 'atrasados': return lista.filter(i => estado(i).atrasado);
+        case 'proximos':  return lista.filter(i => i.rev.some(r => r.data && r.status !== 'Feito' && emDias(r.data, 7)));
+        default:          return lista;
       }
     }
 
@@ -435,18 +471,19 @@
 
         const etapasHTML = item.rev.map((r, i) => {
           const feito = r.status === 'Feito';
-          const phoje = !feito && isHoje(r.data);
-          const patr  = !feito && isAtrasado(r.data);
+          const phoje = !feito && r.data && isHoje(r.data);
+          const patr  = !feito && r.data && isAtrasado(r.data);
           const ecls  = feito ? 'feito' : phoje ? 'pend-hoje' : patr ? 'atrasado' : '';
           
+          const labelCompleta = (i === 4 || i === 5) ? LABELS[i] : `${LABELS[i]} · ${fmt(r.data)}`;
+
           if (feito) {
             return `<button class="etapa feito" onclick="desfazerRevisao('${item.id}',${i})">
               <span class="txt-normal">✓ ${LABELS[i]}</span>
               <span class="txt-desfazer">↩ Desfazer?</span>
             </button>`;
           } else {
-            const lbl = LABELS[i] + ' · ' + fmt(r.data);
-            return `<button class="etapa ${ecls}" onclick="marcarFeito('${item.id}',${i})">${lbl}</button>`;
+            return `<button class="etapa ${ecls}" onclick="marcarFeito('${item.id}',${i})">${labelCompleta}</button>`;
           }
         }).join('');
 
@@ -528,7 +565,6 @@
       } catch { toast("⚠️ Erro ao guardar no servidor"); }
     }
 
-    // SHEET NOVO
     function abrirSheet() {
       document.getElementById('overlay').classList.add('show');
       setTimeout(() => document.getElementById('inpNome').focus(), 80);
@@ -576,7 +612,6 @@
       }
     }
 
-    // EDITAR NOVO
     function abrirEditar(id) {
       const item = dados.find(d => d.id === id);
       if(!item) return;
@@ -588,8 +623,6 @@
       document.getElementById('editD2').value = toISO(item.rev[1].data) || '';
       document.getElementById('editD3').value = toISO(item.rev[2].data) || '';
       document.getElementById('editD4').value = toISO(item.rev[3].data) || '';
-      document.getElementById('editDInt').value = toISO(item.rev[4].data) || '';
-      document.getElementById('editDFin').value = toISO(item.rev[5].data) || '';
 
       document.getElementById('overlayEdit').classList.add('show');
     }
@@ -608,9 +641,7 @@
         d1: document.getElementById('editD1').value,
         d2: document.getElementById('editD2').value,
         d3: document.getElementById('editD3').value,
-        d4: document.getElementById('editD4').value,
-        dInt: document.getElementById('editDInt').value,
-        dFin: document.getElementById('editDFin').value
+        d4: document.getElementById('editD4').value
       };
 
       const item = dados.find(d => d.id === id);
@@ -620,8 +651,6 @@
       item.rev[1].data = parseData(payload.d2);
       item.rev[2].data = parseData(payload.d3);
       item.rev[3].data = parseData(payload.d4);
-      item.rev[4].data = parseData(payload.dInt);
-      item.rev[5].data = parseData(payload.dFin);
       salvarCache(dados);
       atualizar();
 
