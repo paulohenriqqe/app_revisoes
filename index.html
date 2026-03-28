@@ -70,7 +70,6 @@
     .pill:hover { border-color: var(--accent); color: var(--accent); }
     .pill.ativo { background: var(--accent); border-color: var(--accent); color: #fff; }
 
-    /* Novo: Sub-filtros para Intermediária e Final */
     .sub-filtros { display: none; gap: 6px; overflow-x: auto; padding-bottom: 14px; margin-top: -4px; scrollbar-width: none; }
     .sub-filtros::-webkit-scrollbar { display: none; }
     .sub-filtros.show { display: flex; }
@@ -203,6 +202,10 @@
     .btn-save:hover    { background: #235e45; }
     .btn-save:disabled { opacity: 0.5; cursor: not-allowed; }
     .btn-cancel { width: 100%; padding: 11px; background: none; border: none; color: var(--muted); font-size: 0.87rem; font-weight: 600; cursor: pointer; margin-top: 6px; }
+    
+    .btn-delete { width: 100%; padding: 11px; background: none; border: 1.5px solid var(--red); color: var(--red); border-radius: 12px; font-size: 0.9rem; font-weight: 700; cursor: pointer; margin-top: 12px; transition: all 0.2s; }
+    .btn-delete:hover { background: var(--red-lt); }
+
     #debugBox { display: none; margin: 10px 16px; background: #fff3cd; border: 1px solid #ffc107; border-radius: 10px; padding: 12px; font-size: 0.78rem; color: #7d4e00; }
   </style>
 </head>
@@ -228,7 +231,7 @@
     </div>
     
     <div class="sub-filtros" id="subFiltros">
-      <button class="sub-pill ativo" onclick="mudarSubFiltro(this, 'pendente')">⏳ Pendentes (Prontas p/ rever)</button>
+      <button class="sub-pill ativo" onclick="mudarSubFiltro(this, 'pendente')">⏳ Pendentes</button>
       <button class="sub-pill" onclick="mudarSubFiltro(this, 'r4_ok')">✅ Já fizeram as 4 revisões</button>
       <button class="sub-pill" onclick="mudarSubFiltro(this, 'todos')">📚 Todos os conteúdos</button>
     </div>
@@ -244,7 +247,7 @@
       <div class="handle"></div>
       <h2>Novo estudo</h2>
       <div class="field">
-        <label>O que estudaste?</label>
+        <label>O você estudou?</label>
         <input id="inpNome" type="text" placeholder="Ex: Termodinâmica — Cap. 4" />
       </div>
       <div class="field">
@@ -258,7 +261,7 @@
         <span class="lbl">R3 →</span> <strong id="p3"></strong> &nbsp;
         <span class="lbl">R4 →</span> <strong id="p4"></strong>
       </div>
-      <button class="btn-save" id="btnSalvar" onclick="salvar()">Guardar</button>
+      <button class="btn-save" id="btnSalvar" onclick="salvar()">Salvar</button>
       <button class="btn-cancel" onclick="fecharSheet()">Cancelar</button>
     </div>
   </div>
@@ -282,20 +285,21 @@
         <div class="field"><label>Rev 4</label><input id="editD4" type="date"/></div>
       </div>
 
-      <button class="btn-save" id="btnSalvarEdit" onclick="salvarEditar()">Guardar Alterações</button>
+      <button class="btn-save" id="btnSalvarEdit" onclick="salvarEditar()">Salvar Alterações</button>
+      <button class="btn-delete" onclick="excluirAssunto()">🗑️ Excluir Assunto</button>
       <button class="btn-cancel" onclick="fecharSheetEdit()">Cancelar</button>
     </div>
   </div>
 
   <script>
     const API_URL   = "https://script.google.com/macros/s/AKfycbx0giuM53xhBwSTGu3A686KDcKOHSy-R1FUHuAPStAsau5rZOdzxHA5eSFpbeiEK90BXg/exec";
-    const CACHE_KEY = "rev_cache_v6";
+    const CACHE_KEY = "rev_cache_v7";
     const CACHE_TTL = 5 * 60 * 1000;
     const LABELS    = ['R1','R2','R3','R4', 'R. Int', 'R. Fin'];
 
     let dados = [];
     let filtroAtual = 'hoje';
-    let subFiltroAtual = 'pendente'; // Padrão: mostra só o que está pronto para revisar
+    let subFiltroAtual = 'pendente';
 
     window.addEventListener('DOMContentLoaded', () => {
       document.getElementById('inpData').value = hojeISO();
@@ -562,7 +566,7 @@
           headers: { 'Content-Type': 'text/plain' },
           body: JSON.stringify({ action, id, etapa })
         });
-      } catch { toast("⚠️ Erro ao guardar no servidor"); }
+      } catch { toast("⚠️ Erro ao salvar no servidor"); }
     }
 
     function abrirSheet() {
@@ -591,7 +595,7 @@
       if (!nome || !data) { toast("⚠️ Preenche os dois campos!"); return; }
 
       const btn = document.getElementById('btnSalvar');
-      btn.disabled = true; btn.textContent = 'A guardar…';
+      btn.disabled = true; btn.textContent = 'Salvando…';
 
       try {
         await fetch(API_URL, {
@@ -608,7 +612,7 @@
       } catch {
         toast("❌ Erro de rede.");
       } finally {
-        btn.disabled = false; btn.textContent = 'Guardar';
+        btn.disabled = false; btn.textContent = 'Salvar';
       }
     }
 
@@ -664,7 +668,37 @@
           body: JSON.stringify(payload)
         });
         setTimeout(() => buscarDados(true), 1500);
-      } catch (e) { toast("❌ Erro ao guardar."); }
+      } catch (e) { toast("❌ Erro ao Salvar."); }
+    }
+
+    // ── FUNÇÃO DE EXCLUSÃO (NOVA) ──────────────────────────────────
+    async function excluirAssunto() {
+      const id = document.getElementById('editId').value;
+      
+      // Pede confirmação antes de excluir
+      if (!confirm("Tem a certeza que deseja excluir este assunto? Esta ação não pode ser desfeita.")) {
+        return;
+      }
+
+      // Remove da interface imediatamente (optimistic UI)
+      dados = dados.filter(d => d.id !== id);
+      salvarCache(dados);
+      atualizar();
+      fecharSheetEdit();
+      toast("🗑️ Assunto excluído!");
+
+      // Manda a instrução de excluir para o servidor
+      try {
+        await fetch(API_URL, {
+          method: 'POST', mode: 'no-cors',
+          headers: { 'Content-Type': 'text/plain' },
+          body: JSON.stringify({ action: 'excluir', id: id })
+        });
+        // Atualiza os dados novamente após a deleção para garantir o sincronismo
+        setTimeout(() => buscarDados(true), 1500);
+      } catch (e) {
+        toast("❌ Erro ao excluir no servidor.");
+      }
     }
 
     function toast(msg) {
