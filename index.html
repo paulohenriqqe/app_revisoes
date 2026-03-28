@@ -5,43 +5,47 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Revisões</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Nunito:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --bg: #0f0f13;
-      --surface: #1a1a22;
-      --surface2: #22222d;
-      --border: rgba(255,255,255,0.07);
-      --text: #e8e8f0;
-      --muted: #6b6b80;
-      --accent: #7c6aff;
-      --accent2: #ff6a8a;
-      --green: #34d97b;
-      --yellow: #ffd166;
-      --red: #ff5c7a;
-      --radius: 14px;
+      --bg:        #f5f3ee;
+      --white:     #ffffff;
+      --surface:   #faf9f6;
+      --border:    #e8e4dc;
+      --text:      #1c1917;
+      --muted:     #9c9488;
+      --accent:    #2d6a4f;
+      --accent-lt: #e8f5ee;
+      --red:       #c0392b;
+      --red-lt:    #fdecea;
+      --amber:     #b45309;
+      --amber-lt:  #fef3c7;
+      --blue:      #1d4ed8;
+      --radius:    12px;
+      --shadow:    0 1px 4px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04);
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
-      font-family: 'DM Sans', sans-serif;
+      font-family: 'Nunito', sans-serif;
       background: var(--bg);
       color: var(--text);
       min-height: 100vh;
-      padding-bottom: 100px;
+      padding-bottom: 110px;
     }
 
     /* ── HEADER ── */
     header {
-      padding: 20px 20px 0;
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      padding: 16px 20px 0;
       position: sticky;
       top: 0;
       z-index: 10;
-      background: linear-gradient(to bottom, var(--bg) 80%, transparent);
     }
 
-    .header-top {
+    .header-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -49,69 +53,66 @@
     }
 
     h1 {
-      font-family: 'Syne', sans-serif;
-      font-size: 1.6rem;
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem;
       font-weight: 800;
-      letter-spacing: -0.5px;
+      letter-spacing: -0.3px;
     }
 
     .sync-btn {
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      color: var(--muted);
+      width: 36px; height: 36px;
       border-radius: 50%;
-      width: 36px;
-      height: 36px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      border: 1.5px solid var(--border);
+      background: var(--surface);
+      color: var(--muted);
       cursor: pointer;
-      font-size: 16px;
+      font-size: 17px;
+      display: flex; align-items: center; justify-content: center;
       transition: all 0.2s;
     }
-    .sync-btn:hover { color: var(--text); border-color: var(--accent); }
-    .sync-btn.spinning { animation: spin 1s linear infinite; }
+    .sync-btn:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-lt); }
+    .sync-btn.spinning { animation: spin 0.9s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* ── STATS STRIP ── */
+    /* ── STATS ── */
     .stats {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
-      margin-bottom: 16px;
+      gap: 8px;
+      margin-bottom: 14px;
     }
 
-    .stat-card {
+    .stat {
       background: var(--surface);
       border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 12px;
+      border-radius: 10px;
+      padding: 10px 6px;
       text-align: center;
     }
 
-    .stat-num {
-      font-family: 'Syne', sans-serif;
-      font-size: 1.6rem;
-      font-weight: 800;
+    .stat-n {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.65rem;
+      font-weight: 700;
       line-height: 1;
     }
+    .stat-n.red   { color: var(--red); }
+    .stat-n.blue  { color: var(--blue); }
+    .stat-n.green { color: var(--accent); }
 
-    .stat-num.today { color: var(--accent2); }
-    .stat-num.total { color: var(--accent); }
-    .stat-num.done  { color: var(--green); }
-
-    .stat-label {
-      font-size: 0.72rem;
+    .stat-lbl {
+      font-size: 0.67rem;
       color: var(--muted);
-      margin-top: 4px;
       text-transform: uppercase;
       letter-spacing: 0.5px;
+      font-weight: 700;
+      margin-top: 3px;
     }
 
-    /* ── FILTROS ── */
+    /* ── PILLS ── */
     .filtros {
       display: flex;
-      gap: 8px;
+      gap: 6px;
       overflow-x: auto;
       padding-bottom: 14px;
       scrollbar-width: none;
@@ -119,347 +120,264 @@
     .filtros::-webkit-scrollbar { display: none; }
 
     .pill {
-      padding: 7px 16px;
+      padding: 6px 14px;
       border-radius: 20px;
-      border: 1px solid var(--border);
-      background: var(--surface);
+      border: 1.5px solid var(--border);
+      background: transparent;
       color: var(--muted);
-      font-weight: 600;
-      font-size: 0.82rem;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 700;
+      font-size: 0.78rem;
       white-space: nowrap;
       cursor: pointer;
-      transition: all 0.2s;
+      transition: all 0.18s;
     }
-    .pill.ativo {
-      background: var(--accent);
-      border-color: var(--accent);
-      color: #fff;
-    }
+    .pill:hover { border-color: var(--accent); color: var(--accent); }
+    .pill.ativo { background: var(--accent); border-color: var(--accent); color: #fff; }
 
-    /* ── CARDS ── */
-    .container {
-      padding: 0 16px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-
-    .card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 16px;
-      position: relative;
-      overflow: hidden;
-      animation: fadeUp 0.3s ease both;
-    }
-
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(10px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-
-    .card::before {
-      content: '';
-      position: absolute;
-      left: 0; top: 0; bottom: 0;
-      width: 4px;
-      background: var(--accent);
-      border-radius: 4px 0 0 4px;
-    }
-
-    .card.urgente::before  { background: var(--red); }
-    .card.hoje::before     { background: var(--yellow); }
-    .card.concluido::before { background: var(--green); }
-
-    .card-titulo {
-      font-family: 'Syne', sans-serif;
-      font-size: 1.05rem;
-      font-weight: 700;
-      margin-bottom: 10px;
-      padding-left: 8px;
-    }
-
-    .card-meta {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      padding-left: 8px;
-    }
-
-    .tag {
-      font-size: 0.75rem;
-      padding: 3px 10px;
-      border-radius: 20px;
-      font-weight: 600;
-    }
-
-    .tag-data   { background: rgba(124,106,255,0.15); color: var(--accent); }
-    .tag-prog   { background: rgba(255,255,255,0.07); color: var(--muted); }
-    .tag-pend   { background: rgba(255,92,122,0.15);  color: var(--red); }
-    .tag-ok     { background: rgba(52,217,123,0.15);  color: var(--green); }
-    .tag-hoje   { background: rgba(255,209,102,0.15); color: var(--yellow); }
-
-    /* Botões de revisão por etapa */
-    .card-revisoes {
-      margin-top: 12px;
-      padding-left: 8px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-    }
-
-    .btn-rev {
-      font-size: 0.75rem;
-      padding: 5px 12px;
-      border-radius: 8px;
-      border: 1px solid var(--border);
-      background: var(--surface2);
-      color: var(--muted);
-      cursor: pointer;
-      font-weight: 600;
-      transition: all 0.2s;
-    }
-
-    .btn-rev.pendente-hoje {
-      background: rgba(255,209,102,0.15);
-      color: var(--yellow);
-      border-color: rgba(255,209,102,0.3);
-    }
-
-    .btn-rev.feito {
-      background: rgba(52,217,123,0.1);
-      color: var(--green);
-      border-color: rgba(52,217,123,0.2);
-      text-decoration: line-through;
-      opacity: 0.6;
-    }
-
-    .btn-rev:not(.feito):hover {
-      border-color: var(--accent);
-      color: var(--accent);
-    }
-
-    /* ── EMPTY STATE ── */
-    .empty {
-      text-align: center;
-      padding: 60px 20px;
-      color: var(--muted);
-    }
-
-    .empty-icon { font-size: 3rem; margin-bottom: 12px; }
-    .empty-txt  { font-size: 0.95rem; }
-
-    /* ── SKELETON ── */
-    .skeleton {
-      background: var(--surface);
-      border-radius: var(--radius);
-      padding: 16px;
+    /* ── LISTA ── */
+    .lista {
+      padding: 14px 16px;
       display: flex;
       flex-direction: column;
       gap: 10px;
     }
 
-    .skel-line {
-      background: linear-gradient(90deg, var(--surface2) 25%, var(--surface) 50%, var(--surface2) 75%);
-      background-size: 200% 100%;
-      border-radius: 6px;
-      animation: shimmer 1.5s infinite;
+    /* ── CARD ── */
+    .card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      animation: up 0.28s ease both;
+    }
+    @keyframes up {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
     }
 
+    .card-inner {
+      display: flex;
+      align-items: stretch;
+    }
+
+    .stripe {
+      width: 4px;
+      flex-shrink: 0;
+      background: var(--border);
+    }
+    .card.urgente .stripe { background: var(--red); }
+    .card.hoje    .stripe { background: var(--amber); }
+    .card.ok      .stripe { background: var(--accent); }
+
+    .card-body {
+      flex: 1;
+      padding: 13px 14px 12px;
+      min-width: 0;
+    }
+
+    .card-titulo {
+      font-family: 'Playfair Display', serif;
+      font-size: 0.98rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 8px;
+      line-height: 1.35;
+      word-break: break-word;
+    }
+
+    .card-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      margin-bottom: 9px;
+    }
+
+    .badge {
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 2px 9px;
+      border-radius: 20px;
+    }
+    .bg-gray  { background: #f0ede8; color: var(--muted); }
+    .bg-red   { background: var(--red-lt);   color: var(--red); }
+    .bg-amber { background: var(--amber-lt); color: var(--amber); }
+    .bg-green { background: var(--accent-lt); color: var(--accent); }
+
+    /* ── ETAPAS ── */
+    .etapas {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+    }
+
+    .etapa {
+      font-size: 0.71rem;
+      font-weight: 700;
+      font-family: 'Nunito', sans-serif;
+      padding: 4px 10px;
+      border-radius: 7px;
+      border: 1.5px solid var(--border);
+      background: var(--surface);
+      color: var(--muted);
+      cursor: pointer;
+      transition: all 0.18s;
+      line-height: 1.4;
+    }
+    .etapa:not([disabled]):hover { border-color: var(--accent); color: var(--accent); background: var(--accent-lt); }
+    .etapa.pend-hoje  { border-color: #fbbf24; background: var(--amber-lt); color: var(--amber); }
+    .etapa.atrasado   { border-color: #fca5a5; background: var(--red-lt);   color: var(--red); }
+    .etapa.feito      { border-color: #bbf7d0; background: var(--accent-lt); color: var(--accent); opacity: 0.65; cursor: default; }
+
+    /* ── EMPTY / SKEL ── */
+    .empty { text-align: center; padding: 56px 20px; color: var(--muted); }
+    .empty-icon { font-size: 2.6rem; margin-bottom: 10px; }
+    .empty-txt  { font-size: 0.88rem; line-height: 1.7; }
+
+    .skel {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 15px;
+      display: flex; flex-direction: column; gap: 10px;
+    }
+    .skel-line {
+      border-radius: 6px;
+      background: linear-gradient(90deg, #ede9e2 25%, #f5f3ee 50%, #ede9e2 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.4s infinite;
+    }
     @keyframes shimmer { to { background-position: -200% 0; } }
 
     /* ── FAB ── */
     .fab {
-      position: fixed;
-      bottom: 24px;
-      right: 20px;
-      width: 56px;
-      height: 56px;
-      background: var(--accent);
-      color: white;
-      border-radius: 50%;
-      border: none;
-      font-size: 28px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 8px 24px rgba(124,106,255,0.4);
+      position: fixed; bottom: 24px; right: 20px;
+      width: 52px; height: 52px;
+      background: var(--accent); color: white;
+      border-radius: 50%; border: none;
+      font-size: 26px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 6px 20px rgba(45,106,79,0.32);
       transition: transform 0.2s, box-shadow 0.2s;
       z-index: 15;
     }
-
-    .fab:hover { transform: scale(1.08); box-shadow: 0 12px 32px rgba(124,106,255,0.5); }
-    .fab:active { transform: scale(0.95); }
+    .fab:hover  { transform: scale(1.08); box-shadow: 0 10px 28px rgba(45,106,79,0.42); }
+    .fab:active { transform: scale(0.94); }
 
     /* ── TOAST ── */
     .toast {
-      position: fixed;
-      bottom: 95px;
-      left: 50%;
-      transform: translateX(-50%) translateY(10px);
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      color: var(--text);
-      padding: 10px 20px;
-      border-radius: 30px;
-      font-size: 0.88rem;
-      font-weight: 500;
-      opacity: 0;
-      pointer-events: none;
-      transition: all 0.3s;
-      z-index: 50;
-      white-space: nowrap;
+      position: fixed; bottom: 88px; left: 50%;
+      transform: translateX(-50%) translateY(8px);
+      background: var(--text); color: #fff;
+      padding: 9px 20px; border-radius: 30px;
+      font-size: 0.83rem; font-weight: 600;
+      opacity: 0; pointer-events: none;
+      transition: all 0.25s; z-index: 50; white-space: nowrap;
     }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-    .toast.show {
-      opacity: 1;
-      transform: translateX(-50%) translateY(0);
-    }
-
-    /* ── MODAL ── */
+    /* ── BOTTOM SHEET ── */
     .overlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.7);
-      backdrop-filter: blur(4px);
-      z-index: 20;
-      justify-content: flex-end;
-      align-items: flex-end;
+      display: none; position: fixed; inset: 0;
+      background: rgba(28,25,23,0.4);
+      backdrop-filter: blur(3px);
+      z-index: 20; align-items: flex-end; justify-content: center;
     }
-
     .overlay.show { display: flex; }
 
     .sheet {
-      background: var(--surface);
-      border: 1px solid var(--border);
+      background: var(--white);
       border-radius: 20px 20px 0 0;
-      padding: 24px 20px 36px;
-      width: 100%;
-      max-width: 480px;
-      margin: 0 auto;
-      animation: slideUp 0.3s ease;
+      border-top: 1px solid var(--border);
+      padding: 20px 20px 44px;
+      width: 100%; max-width: 500px;
+      animation: slideUp 0.28s ease;
     }
+    @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
 
-    @keyframes slideUp {
-      from { transform: translateY(100%); }
-      to   { transform: translateY(0); }
-    }
-
-    .sheet-handle {
-      width: 40px;
-      height: 4px;
-      background: var(--surface2);
-      border-radius: 4px;
+    .handle {
+      width: 36px; height: 4px;
+      background: var(--border); border-radius: 4px;
       margin: 0 auto 20px;
     }
 
     .sheet h2 {
-      font-family: 'Syne', sans-serif;
-      font-size: 1.2rem;
-      font-weight: 800;
-      margin-bottom: 20px;
+      font-family: 'Playfair Display', serif;
+      font-size: 1.2rem; font-weight: 800; margin-bottom: 18px;
     }
 
-    .field { margin-bottom: 16px; }
+    .field { margin-bottom: 13px; }
 
     .field label {
       display: block;
-      font-size: 0.8rem;
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin-bottom: 6px;
-      font-weight: 600;
+      font-size: 0.7rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.6px;
+      color: var(--muted); margin-bottom: 5px;
     }
 
     .field input {
-      width: 100%;
-      padding: 12px 14px;
-      background: var(--surface2);
-      border: 1px solid var(--border);
+      width: 100%; padding: 11px 13px;
+      border: 1.5px solid var(--border);
       border-radius: 10px;
+      background: var(--surface);
       color: var(--text);
-      font-size: 1rem;
-      font-family: 'DM Sans', sans-serif;
-      outline: none;
-      transition: border-color 0.2s;
+      font-size: 0.93rem; font-family: 'Nunito', sans-serif;
+      outline: none; transition: border-color 0.2s;
     }
+    .field input:focus { border-color: var(--accent); background: var(--white); }
+    .field input::placeholder { color: #c4bfb6; }
 
-    .field input:focus { border-color: var(--accent); }
-    .field input::placeholder { color: var(--muted); }
-
-    /* Colorscheme for date input */
-    .field input[type="date"]::-webkit-calendar-picker-indicator {
-      filter: invert(0.6);
+    .preview-box {
+      background: var(--accent-lt);
+      border: 1px solid #b7e4c7;
+      border-radius: 10px;
+      padding: 11px 14px;
+      font-size: 0.8rem; color: var(--accent); font-weight: 600;
+      margin-top: 10px; display: none; line-height: 2;
     }
+    .preview-box .lbl { opacity: 0.6; font-weight: 500; }
 
-    .btn-primary {
-      width: 100%;
-      padding: 14px;
-      background: var(--accent);
-      color: white;
-      border: none;
-      border-radius: 12px;
-      font-family: 'Syne', sans-serif;
-      font-weight: 700;
-      font-size: 1rem;
-      cursor: pointer;
+    .btn-save {
+      width: 100%; padding: 13px;
+      background: var(--accent); color: white;
+      border: none; border-radius: 12px;
+      font-family: 'Playfair Display', serif;
+      font-weight: 700; font-size: 1rem;
+      cursor: pointer; margin-top: 16px;
       transition: all 0.2s;
-      margin-top: 4px;
     }
-
-    .btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
-    .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+    .btn-save:hover    { background: #235e45; }
+    .btn-save:disabled { opacity: 0.5; cursor: not-allowed; }
 
     .btn-cancel {
-      width: 100%;
-      padding: 12px;
-      background: none;
-      border: none;
-      color: var(--muted);
-      font-size: 0.9rem;
-      cursor: pointer;
-      margin-top: 8px;
+      width: 100%; padding: 11px;
+      background: none; border: none;
+      color: var(--muted); font-size: 0.87rem;
+      font-weight: 600; cursor: pointer; margin-top: 6px;
     }
-
-    /* Preview das datas de revisão */
-    .preview-datas {
-      background: var(--surface2);
-      border-radius: 10px;
-      padding: 12px;
-      margin-top: 12px;
-      font-size: 0.82rem;
-      color: var(--muted);
-      line-height: 1.8;
-      display: none;
-    }
-
-    .preview-datas strong { color: var(--text); }
   </style>
 </head>
 <body>
 
   <header>
-    <div class="header-top">
+    <div class="header-row">
       <h1>📚 Revisões</h1>
-      <button class="sync-btn" id="syncBtn" onclick="sincronizar()" title="Sincronizar">↻</button>
+      <button class="sync-btn" id="syncBtn" onclick="sincronizar()" title="Atualizar">↻</button>
     </div>
 
     <div class="stats">
-      <div class="stat-card">
-        <div class="stat-num today" id="numHoje">–</div>
-        <div class="stat-label">Para hoje</div>
+      <div class="stat">
+        <div class="stat-n red"   id="numHoje">–</div>
+        <div class="stat-lbl">Para hoje</div>
       </div>
-      <div class="stat-card">
-        <div class="stat-num total" id="numTotal">–</div>
-        <div class="stat-label">Conteúdos</div>
+      <div class="stat">
+        <div class="stat-n blue"  id="numTotal">–</div>
+        <div class="stat-lbl">Conteúdos</div>
       </div>
-      <div class="stat-card">
-        <div class="stat-num done" id="numFeitos">–</div>
-        <div class="stat-label">Completos</div>
+      <div class="stat">
+        <div class="stat-n green" id="numOk">–</div>
+        <div class="stat-lbl">Completos</div>
       </div>
     </div>
 
@@ -471,98 +389,82 @@
     </div>
   </header>
 
-  <div class="container" id="lista"></div>
-
+  <div class="lista" id="lista"></div>
   <div class="toast" id="toast"></div>
   <button class="fab" onclick="abrirSheet()">+</button>
 
-  <!-- Bottom sheet -->
-  <div class="overlay" id="overlay" onclick="fecharSheet(event)">
+  <div class="overlay" id="overlay" onclick="fecharBg(event)">
     <div class="sheet">
-      <div class="sheet-handle"></div>
-      <h2>Novo conteúdo estudado</h2>
+      <div class="handle"></div>
+      <h2>Novo estudo</h2>
 
       <div class="field">
         <label>O que estudaste?</label>
-        <input type="text" id="inpNome" placeholder="Ex: Microeconomia – Capítulo 3" />
+        <input id="inpNome" type="text" placeholder="Ex: Termodinâmica — Cap. 4" />
       </div>
-
       <div class="field">
         <label>Data do estudo</label>
-        <input type="date" id="inpData" />
+        <input id="inpData" type="date" />
       </div>
 
-      <div class="preview-datas" id="previewDatas">
+      <div class="preview-box" id="previewBox">
         Revisões agendadas:<br/>
-        <strong id="p1"></strong> · <strong id="p2"></strong> · <strong id="p3"></strong> · <strong id="p4"></strong>
+        <span class="lbl">R1 →</span> <strong id="p1"></strong> &nbsp;
+        <span class="lbl">R2 →</span> <strong id="p2"></strong> &nbsp;
+        <span class="lbl">R3 →</span> <strong id="p3"></strong> &nbsp;
+        <span class="lbl">R4 →</span> <strong id="p4"></strong>
       </div>
 
-      <button class="btn-primary" id="btnSalvar" onclick="salvar()">Guardar</button>
+      <button class="btn-save" id="btnSalvar" onclick="salvar()">Guardar</button>
       <button class="btn-cancel" onclick="fecharSheet()">Cancelar</button>
     </div>
   </div>
 
   <script>
-    // ══════════════════════════════════════════════════════
-    //  CONFIG — cola o teu URL aqui
-    // ══════════════════════════════════════════════════════
-    const API_URL = "https://script.google.com/macros/s/AKfycbx0giuM53xhBwSTGu3A686KDcKOHSy-R1FUHuAPStAsau5rZOdzxHA5eSFpbeiEK90BXg/exec";
-    const CACHE_KEY = "revisoes_cache";
-    const CACHE_TTL = 5 * 60 * 1000; // 5 minutos
-
-    // Intervalos da revisão espaçada (em dias)
-    const INTERVALOS = [1, 7, 14, 30];
+    // ═══════════════════════════════════════════════
+    //  CONFIG — substitui pelo teu URL
+    // ═══════════════════════════════════════════════
+    const API_URL   = "https://script.google.com/macros/s/AKfycbx0giuM53xhBwSTGu3A686KDcKOHSy-R1FUHuAPStAsau5rZOdzxHA5eSFpbeiEK90BXg/exec";
+    const CACHE_KEY = "rev_cache_v2";
+    const CACHE_TTL = 5 * 60 * 1000;
 
     let dados = [];
     let filtroAtual = 'hoje';
 
-    // ── INIT ──────────────────────────────────────────────
+    // INIT
     window.addEventListener('DOMContentLoaded', () => {
-      // Pré-preenche a data com hoje
       document.getElementById('inpData').value = hojeISO();
       document.getElementById('inpData').addEventListener('change', mostrarPreview);
       document.getElementById('inpNome').addEventListener('input', mostrarPreview);
 
-      // Tenta carregar do cache primeiro (sem travamento)
       const cached = lerCache();
-      if (cached) {
-        dados = cached;
-        atualizar();
-      }
-
-      // Carrega do servidor em background
-      buscarDados(/*silencioso=*/!!cached);
+      if (cached) { dados = cached; atualizar(); }
+      buscarDados(!!cached);
     });
 
-    // ── CACHE ─────────────────────────────────────────────
+    // CACHE
     function lerCache() {
       try {
         const raw = localStorage.getItem(CACHE_KEY);
         if (!raw) return null;
         const { ts, data } = JSON.parse(raw);
-        if (Date.now() - ts > CACHE_TTL) return null;
-        return data;
+        return Date.now() - ts > CACHE_TTL ? null : data;
       } catch { return null; }
     }
-
     function salvarCache(data) {
-      try {
-        localStorage.setItem(CACHE_KEY, JSON.stringify({ ts: Date.now(), data }));
-      } catch {}
+      try { localStorage.setItem(CACHE_KEY, JSON.stringify({ ts: Date.now(), data })); } catch {}
     }
 
-    // ── FETCH ─────────────────────────────────────────────
+    // FETCH
     async function buscarDados(silencioso = false) {
       const btn = document.getElementById('syncBtn');
       btn.classList.add('spinning');
-
       if (!silencioso) renderSkeleton();
 
       try {
         const res = await fetch(API_URL + "?t=" + Date.now());
         if (!res.ok) throw new Error('HTTP ' + res.status);
-        const raw = await res.json();
-        dados = normalizar(raw);
+        dados = normalizar(await res.json());
         salvarCache(dados);
         atualizar();
         if (!silencioso) toast("✅ Dados actualizados!");
@@ -575,86 +477,51 @@
       }
     }
 
-    function sincronizar() {
-      buscarDados(false);
-    }
+    function sincronizar() { buscarDados(false); }
 
-    // ── NORMALIZAÇÃO ──────────────────────────────────────
-    // Aceita qualquer formato de coluna que venha do Sheets
+    // NORMALIZAR
     function normalizar(raw) {
       return raw.map(row => {
-        // Campos que o Apps Script pode usar
+        const vals = Object.values(row);
         const nome = row['Conteudo'] || row['📚 CONTEÚDO'] || row['CONTEÚDO'] || row['conteudo'] || '';
         const id   = row['ID'] || row['Id'] || row['id'] || '';
         const prog = row['📊 PROGRESSO'] || row['Progresso'] || row['progresso'] || '0/4';
 
-        // Datas das revisões (colunas D, F, H, J)
         const rev = [];
         for (let i = 0; i < 4; i++) {
-          const idx = i * 2;
-          const colData   = Object.values(row)[3 + idx]  || '';
-          const colStatus = Object.values(row)[4 + idx]  || 'Pendente';
-          rev.push({ data: parseData(colData), status: colStatus });
+          const colData   = vals[3 + i * 2] || '';
+          const colStatus = vals[4 + i * 2] || 'Pendente';
+          rev.push({ data: parseData(colData), status: String(colStatus) });
         }
-
         return { id, nome, prog, rev };
       }).filter(r => r.nome);
     }
 
-    // ── DATAS ─────────────────────────────────────────────
-    function hojeISO() {
-      return new Date().toISOString().split('T')[0];
-    }
-
-    function parseData(val) {
-      if (!val) return null;
-      const d = new Date(val);
-      return isNaN(d) ? null : d;
-    }
-
-    function dataISO(d) {
-      if (!d) return '';
-      return d.toISOString().split('T')[0];
-    }
-
-    function fmt(d) {
-      if (!d) return '–';
-      return d.toLocaleDateString('pt-PT', { day: '2-digit', month: '2-digit' });
-    }
-
-    function addDias(base, dias) {
-      const d = new Date(base);
-      d.setDate(d.getDate() + dias);
-      return d;
-    }
-
-    function isHoje(d) {
+    // DATAS
+    function hojeISO() { return new Date().toISOString().split('T')[0]; }
+    function parseData(v) { if (!v) return null; const d = new Date(v); return isNaN(d) ? null : d; }
+    function toISO(d)     { return d ? d.toISOString().split('T')[0] : ''; }
+    function fmt(d)       { return d ? d.toLocaleDateString('pt-PT', { day: '2-digit', month: '2-digit' }) : '–'; }
+    function addDias(b,n) { const d = new Date(b); d.setDate(d.getDate() + n); return d; }
+    function isHoje(d)    { return d ? toISO(d) === hojeISO() : false; }
+    function isAtrasado(d){ return d ? toISO(d) < hojeISO()  : false; }
+    function emDias(d,n)  {
       if (!d) return false;
-      return dataISO(d) === hojeISO();
+      const lim = addDias(new Date(), n);
+      return toISO(d) > hojeISO() && toISO(d) <= toISO(lim);
     }
 
-    function isAtrasado(d) {
-      if (!d) return false;
-      return dataISO(d) < hojeISO();
+    // ESTADO CARD
+    function estado(item) {
+      const pend     = item.rev.filter(r => r.status !== 'Feito');
+      return {
+        atrasado: pend.some(r => isAtrasado(r.data)),
+        hoje:     pend.some(r => isHoje(r.data)),
+        completo: pend.length === 0
+      };
     }
 
-    function emDias(d, n) {
-      if (!d) return false;
-      const limite = addDias(new Date(), n);
-      return dataISO(d) > hojeISO() && dataISO(d) <= dataISO(limite);
-    }
-
-    // ── LÓGICA DE ESTADO DO CARD ──────────────────────────
-    function estadoCard(item) {
-      // Verifica se alguma revisão está atrasada ou é hoje
-      const pendentes = item.rev.filter(r => r.status !== 'Feito');
-      const atrasado  = pendentes.some(r => isAtrasado(r.data));
-      const hoje      = pendentes.some(r => isHoje(r.data));
-      const completo  = pendentes.length === 0;
-      return { atrasado, hoje, completo };
-    }
-
-    // ── FILTRO ────────────────────────────────────────────
+    // FILTRO
     function filtrar(el, tipo) {
       document.querySelectorAll('.pill').forEach(p => p.classList.remove('ativo'));
       el.classList.add('ativo');
@@ -664,88 +531,82 @@
 
     function aplicarFiltro(lista) {
       switch (filtroAtual) {
-        case 'hoje':
-          return lista.filter(item => {
-            const { hoje, atrasado } = estadoCard(item);
-            return hoje || atrasado;
-          });
-        case 'atrasados':
-          return lista.filter(item => estadoCard(item).atrasado);
-        case 'proximos':
-          return lista.filter(item => {
-            const pendentes = item.rev.filter(r => r.status !== 'Feito');
-            return pendentes.some(r => emDias(r.data, 7));
-          });
-        case 'todos':
-          return lista;
-        default:
-          return lista;
+        case 'hoje':      return lista.filter(i => { const e = estado(i); return e.hoje || e.atrasado; });
+        case 'atrasados': return lista.filter(i => estado(i).atrasado);
+        case 'proximos':  return lista.filter(i => i.rev.some(r => r.status !== 'Feito' && emDias(r.data, 7)));
+        default:          return lista;
       }
     }
 
-    // ── RENDER ────────────────────────────────────────────
+    // ATUALIZAR
     function atualizar() {
-      // Stats
-      const comHoje    = dados.filter(i => { const e = estadoCard(i); return e.hoje || e.atrasado; });
-      const completos  = dados.filter(i => estadoCard(i).completo);
-      document.getElementById('numHoje').textContent   = comHoje.length;
-      document.getElementById('numTotal').textContent  = dados.length;
-      document.getElementById('numFeitos').textContent = completos.length;
+      const comHoje   = dados.filter(i => { const e = estado(i); return e.hoje || e.atrasado; });
+      const completos = dados.filter(i => estado(i).completo);
+      document.getElementById('numHoje').textContent  = comHoje.length;
+      document.getElementById('numTotal').textContent = dados.length;
+      document.getElementById('numOk').textContent    = completos.length;
       renderCards();
     }
 
+    // RENDER
+    const LABELS = ['R1 · +1d','R2 · +7d','R3 · +14d','R4 · +30d'];
+
     function renderCards() {
       const lista = aplicarFiltro(dados);
-      const el = document.getElementById('lista');
+      const el    = document.getElementById('lista');
 
       if (lista.length === 0) {
         el.innerHTML = `
           <div class="empty">
             <div class="empty-icon">${filtroAtual === 'hoje' ? '🎉' : '🔍'}</div>
-            <div class="empty-txt">${filtroAtual === 'hoje' ? 'Tudo em dia! Nada para rever hoje.' : 'Nenhum conteúdo nesta categoria.'}</div>
+            <div class="empty-txt">${filtroAtual === 'hoje'
+              ? 'Tudo em dia!<br/>Nada para rever hoje.'
+              : 'Nenhum conteúdo nesta categoria.'}</div>
           </div>`;
         return;
       }
 
       el.innerHTML = '';
-
       lista.forEach((item, idx) => {
-        const { atrasado, hoje, completo } = estadoCard(item);
-        const cls = completo ? 'concluido' : atrasado ? 'urgente' : hoje ? 'hoje' : '';
+        const { atrasado, hoje, completo } = estado(item);
+        const cls = completo ? 'ok' : atrasado ? 'urgente' : hoje ? 'hoje' : '';
 
-        // Badges por etapa
-        const etapas = ['R1 +1d','R2 +7d','R3 +14d','R4 +30d'];
-        const revHTML = item.rev.map((r, i) => {
-          const feito    = r.status === 'Feito';
-          const pendHoje = !feito && (isHoje(r.data) || isAtrasado(r.data));
-          const cls2     = feito ? 'feito' : pendHoje ? 'pendente-hoje' : '';
-          const label    = feito ? `✓ ${etapas[i]}` : `${etapas[i]} ${fmt(r.data)}`;
-          return `<button class="btn-rev ${cls2}" onclick="marcarFeito('${item.id}', ${i})" ${feito ? 'disabled' : ''}>${label}</button>`;
+        const etapasHTML = item.rev.map((r, i) => {
+          const feito = r.status === 'Feito';
+          const phoje = !feito && isHoje(r.data);
+          const patr  = !feito && isAtrasado(r.data);
+          const ecls  = feito ? 'feito' : phoje ? 'pend-hoje' : patr ? 'atrasado' : '';
+          const lbl   = feito ? '✓ ' + LABELS[i] : LABELS[i] + ' ' + fmt(r.data);
+          return `<button class="etapa ${ecls}" onclick="marcarFeito('${item.id}',${i})" ${feito ? 'disabled' : ''}>${lbl}</button>`;
         }).join('');
 
         const card = document.createElement('div');
         card.className = `card ${cls}`;
-        card.style.animationDelay = (idx * 40) + 'ms';
+        card.style.animationDelay = (idx * 35) + 'ms';
         card.innerHTML = `
-          <div class="card-titulo">${item.nome}</div>
-          <div class="card-meta">
-            <span class="tag tag-prog">Progresso: ${item.prog}</span>
-            ${atrasado ? '<span class="tag tag-pend">⚠️ Atrasado</span>' : ''}
-            ${hoje && !atrasado ? '<span class="tag tag-hoje">📅 Hoje</span>' : ''}
-            ${completo ? '<span class="tag tag-ok">✅ Completo</span>' : ''}
-          </div>
-          <div class="card-revisoes">${revHTML}</div>`;
+          <div class="card-inner">
+            <div class="stripe"></div>
+            <div class="card-body">
+              <div class="card-titulo">${item.nome}</div>
+              <div class="card-badges">
+                <span class="badge bg-gray">Progresso: ${item.prog}</span>
+                ${atrasado  ? '<span class="badge bg-red">⚠️ Atrasado</span>'    : ''}
+                ${hoje && !atrasado ? '<span class="badge bg-amber">📅 Hoje</span>' : ''}
+                ${completo  ? '<span class="badge bg-green">✅ Completo</span>'   : ''}
+              </div>
+              <div class="etapas">${etapasHTML}</div>
+            </div>
+          </div>`;
         el.appendChild(card);
       });
     }
 
     function renderSkeleton() {
-      const el = document.getElementById('lista');
-      el.innerHTML = Array(4).fill(`
-        <div class="skeleton">
-          <div class="skel-line" style="height:18px;width:60%"></div>
-          <div class="skel-line" style="height:12px;width:40%"></div>
-          <div class="skel-line" style="height:28px;width:80%"></div>
+      document.getElementById('lista').innerHTML = Array(4).fill(`
+        <div class="skel">
+          <div class="skel-line" style="height:15px;width:52%"></div>
+          <div class="skel-line" style="height:10px;width:32%"></div>
+          <div class="skel-line" style="height:24px;width:72%"></div>
         </div>`).join('');
     }
 
@@ -753,64 +614,55 @@
       document.getElementById('lista').innerHTML = `
         <div class="empty">
           <div class="empty-icon">📡</div>
-          <div class="empty-txt">Sem ligação e sem cache disponível.<br/>Verifica o teu URL do Apps Script.</div>
+          <div class="empty-txt">Sem ligação e sem cache.<br/>Verifica o URL do Apps Script.</div>
         </div>`;
     }
 
-    // ── MARCAR REVISÃO COMO FEITA ─────────────────────────
+    // MARCAR FEITO (optimistic)
     async function marcarFeito(id, etapa) {
-      // Optimistic update
       const item = dados.find(d => d.id === id);
       if (!item) return;
       item.rev[etapa].status = 'Feito';
-      // Recalcular progresso
       item.prog = item.rev.filter(r => r.status === 'Feito').length + '/4';
+      salvarCache(dados);
       atualizar();
-      toast("🟢 Revisão marcada como feita!");
+      toast("✅ Revisão marcada como feita!");
 
       try {
         await fetch(API_URL, {
           method: 'POST',
+          mode: 'no-cors',
           headers: { 'Content-Type': 'text/plain' },
           body: JSON.stringify({ action: "marcar", id, etapa })
         });
-        salvarCache(dados);
-      } catch {
-        toast("⚠️ Erro ao guardar — será sincronizado depois");
-      }
+      } catch { toast("⚠️ Erro ao guardar no servidor"); }
     }
 
-    // ── MODAL ─────────────────────────────────────────────
+    // SHEET
     function abrirSheet() {
       document.getElementById('overlay').classList.add('show');
-      document.getElementById('inpNome').focus();
+      setTimeout(() => document.getElementById('inpNome').focus(), 80);
       mostrarPreview();
     }
-
-    function fecharSheet(e) {
-      if (e && e.target !== document.getElementById('overlay')) return;
-      document.getElementById('overlay').classList.remove('show');
-    }
+    function fecharSheet() { document.getElementById('overlay').classList.remove('show'); }
+    function fecharBg(e)   { if (e.target === document.getElementById('overlay')) fecharSheet(); }
 
     function mostrarPreview() {
       const dataVal = document.getElementById('inpData').value;
       const nomeVal = document.getElementById('inpNome').value;
-      const prev    = document.getElementById('previewDatas');
-
-      if (!dataVal || !nomeVal) { prev.style.display = 'none'; return; }
-
+      const box     = document.getElementById('previewBox');
+      if (!dataVal || !nomeVal) { box.style.display = 'none'; return; }
       const base = new Date(dataVal + 'T12:00:00');
-      INTERVALOS.forEach((dias, i) => {
-        const d = addDias(base, dias);
-        document.getElementById('p' + (i + 1)).textContent = fmt(d);
+      [1, 7, 14, 30].forEach((n, i) => {
+        document.getElementById('p' + (i + 1)).textContent = fmt(addDias(base, n));
       });
-      prev.style.display = 'block';
+      box.style.display = 'block';
     }
 
+    // SALVAR
     async function salvar() {
       const nome = document.getElementById('inpNome').value.trim();
       const data = document.getElementById('inpData').value;
-
       if (!nome || !data) { toast("⚠️ Preenche os dois campos!"); return; }
 
       const btn = document.getElementById('btnSalvar');
@@ -818,31 +670,28 @@
       btn.textContent = 'A guardar…';
 
       try {
-        const res = await fetch(API_URL, {
+        await fetch(API_URL, {
           method: 'POST',
+          mode: 'no-cors',
           headers: { 'Content-Type': 'text/plain' },
           body: JSON.stringify({ action: "adicionar", nome, data })
         });
-        if (!res.ok) throw new Error('HTTP ' + res.status);
 
-        toast("✅ Conteúdo adicionado com sucesso!");
+        toast("✅ Conteúdo adicionado! A sincronizar…");
         fecharSheet();
         document.getElementById('inpNome').value = '';
         document.getElementById('inpData').value = hojeISO();
-        document.getElementById('previewDatas').style.display = 'none';
-
-        // Espera 1s para o Sheets processar, depois recarrega
-        setTimeout(() => buscarDados(true), 1200);
-
+        document.getElementById('previewBox').style.display = 'none';
+        setTimeout(() => buscarDados(true), 2000);
       } catch {
-        toast("❌ Erro ao guardar. Tenta de novo.");
+        toast("❌ Erro de rede. Verifica a ligação.");
       } finally {
         btn.disabled = false;
         btn.textContent = 'Guardar';
       }
     }
 
-    // ── TOAST ─────────────────────────────────────────────
+    // TOAST
     function toast(msg) {
       const el = document.getElementById('toast');
       el.textContent = msg;
