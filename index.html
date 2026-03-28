@@ -32,7 +32,6 @@
       min-height: 100vh; padding-bottom: 110px;
     }
 
-    /* HEADER */
     header {
       background: var(--white); border-bottom: 1px solid var(--border);
       padding: 16px 20px 0; position: sticky; top: 0; z-index: 10;
@@ -53,7 +52,6 @@
     .sync-btn.spinning { animation: spin 0.9s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* STATS */
     .stats { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; margin-bottom: 14px; }
     .stat { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 10px 6px; text-align: center; }
     .stat-n { font-family: 'Playfair Display', serif; font-size: 1.65rem; font-weight: 700; line-height: 1; }
@@ -62,7 +60,6 @@
     .stat-n.green { color: var(--accent); }
     .stat-lbl { font-size: 0.67rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; font-weight: 700; margin-top: 3px; }
 
-    /* PILLS */
     .filtros { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 14px; scrollbar-width: none; }
     .filtros::-webkit-scrollbar { display: none; }
     .pill {
@@ -73,10 +70,8 @@
     .pill:hover { border-color: var(--accent); color: var(--accent); }
     .pill.ativo { background: var(--accent); border-color: var(--accent); color: #fff; }
 
-    /* LISTA */
     .lista { padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; }
 
-    /* CARD */
     .card {
       background: var(--white); border: 1px solid var(--border);
       border-radius: var(--radius); box-shadow: var(--shadow);
@@ -91,10 +86,15 @@
     .card.ok      .stripe { background: var(--accent); }
 
     .card-body { flex: 1; padding: 13px 14px 12px; min-width: 0; }
+    
+    .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;}
     .card-titulo {
       font-family: 'Playfair Display', serif; font-size: 0.98rem; font-weight: 700;
-      color: var(--text); margin-bottom: 8px; line-height: 1.35; word-break: break-word;
+      color: var(--text); line-height: 1.35; word-break: break-word; margin: 0;
     }
+    .btn-edit { background: none; border: none; font-size: 1.05rem; cursor: pointer; opacity: 0.4; transition: 0.2s; padding: 0 0 0 8px; }
+    .btn-edit:hover { opacity: 1; transform: scale(1.1); }
+
     .card-badges { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 9px; }
     .badge { font-size: 0.7rem; font-weight: 700; padding: 2px 9px; border-radius: 20px; }
     .bg-gray  { background: #f0ede8; color: var(--muted); }
@@ -102,7 +102,6 @@
     .bg-amber { background: var(--amber-lt);  color: var(--amber); }
     .bg-green { background: var(--accent-lt); color: var(--accent); }
 
-    /* ETAPAS */
     .etapas { display: flex; flex-wrap: wrap; gap: 5px; }
 
     .etapa {
@@ -114,11 +113,9 @@
     }
     .etapa:not(.feito):hover { border-color: var(--accent); color: var(--accent); background: var(--accent-lt); }
 
-    /* estados */
     .etapa.pend-hoje  { border-color: #fbbf24; background: var(--amber-lt); color: var(--amber); }
     .etapa.atrasado   { border-color: #fca5a5; background: var(--red-lt);   color: var(--red); }
 
-    /* feito — mostra ✓ e ao hover vira "Desfazer?" */
     .etapa.feito {
       border-color: #bbf7d0; background: var(--accent-lt); color: var(--accent);
       cursor: pointer;
@@ -129,7 +126,6 @@
     .etapa.feito:hover .txt-normal  { display: none; }
     .etapa.feito:hover .txt-desfazer { display: inline; }
 
-    /* EMPTY / SKEL */
     .empty { text-align: center; padding: 56px 20px; color: var(--muted); }
     .empty-icon { font-size: 2.6rem; margin-bottom: 10px; }
     .empty-txt  { font-size: 0.88rem; line-height: 1.7; }
@@ -138,7 +134,6 @@
     .skel-line { border-radius: 6px; background: linear-gradient(90deg, #ede9e2 25%, #f5f3ee 50%, #ede9e2 75%); background-size: 200% 100%; animation: shimmer 1.4s infinite; }
     @keyframes shimmer { to { background-position: -200% 0; } }
 
-    /* FAB */
     .fab {
       position: fixed; bottom: 24px; right: 20px; width: 52px; height: 52px;
       background: var(--accent); color: white; border-radius: 50%; border: none;
@@ -148,7 +143,6 @@
     .fab:hover  { transform: scale(1.08); box-shadow: 0 10px 28px rgba(45,106,79,0.42); }
     .fab:active { transform: scale(0.94); }
 
-    /* TOAST */
     .toast {
       position: fixed; bottom: 88px; left: 50%;
       transform: translateX(-50%) translateY(8px);
@@ -158,7 +152,6 @@
     }
     .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-    /* BOTTOM SHEET */
     .overlay {
       display: none; position: fixed; inset: 0;
       background: rgba(28,25,23,0.4); backdrop-filter: blur(3px);
@@ -168,6 +161,7 @@
     .sheet {
       background: var(--white); border-radius: 20px 20px 0 0; border-top: 1px solid var(--border);
       padding: 20px 20px 44px; width: 100%; max-width: 500px; animation: slideUp 0.28s ease;
+      max-height: 90vh; overflow-y: auto;
     }
     @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
     .handle { width: 36px; height: 4px; background: var(--border); border-radius: 4px; margin: 0 auto 20px; }
@@ -182,6 +176,7 @@
     }
     .field input:focus { border-color: var(--accent); background: var(--white); }
     .field input::placeholder { color: #c4bfb6; }
+    .grid-dates { display: grid; grid-template-columns: 1fr 1fr; gap: 0 12px; }
 
     .preview-box {
       background: var(--accent-lt); border: 1px solid #b7e4c7; border-radius: 10px;
@@ -199,7 +194,6 @@
     .btn-save:disabled { opacity: 0.5; cursor: not-allowed; }
     .btn-cancel { width: 100%; padding: 11px; background: none; border: none; color: var(--muted); font-size: 0.87rem; font-weight: 600; cursor: pointer; margin-top: 6px; }
 
-    /* DEBUG */
     #debugBox {
       display: none; margin: 10px 16px;
       background: #fff3cd; border: 1px solid #ffc107; border-radius: 10px;
@@ -223,6 +217,8 @@
       <button class="pill ativo" onclick="filtrar(this,'hoje')">🔥 Hoje</button>
       <button class="pill" onclick="filtrar(this,'atrasados')">⚠️ Atrasados</button>
       <button class="pill" onclick="filtrar(this,'proximos')">📅 Próximos 7d</button>
+      <button class="pill" onclick="filtrar(this,'intermediaria')">🔄 Intermediária</button>
+      <button class="pill" onclick="filtrar(this,'final')">🏆 Final</button>
       <button class="pill" onclick="filtrar(this,'todos')">Todos</button>
     </div>
   </header>
@@ -256,16 +252,41 @@
     </div>
   </div>
 
+  <div class="overlay" id="overlayEdit" onclick="fecharBgEdit(event)">
+    <div class="sheet">
+      <div class="handle"></div>
+      <h2>Editar Conteúdo</h2>
+      <input type="hidden" id="editId" />
+      
+      <div class="field">
+        <label>Nome do Estudo</label>
+        <input id="editNome" type="text" />
+      </div>
+      
+      <div class="grid-dates">
+        <div class="field"><label>Data Início</label><input id="editDataIni" type="date"/></div>
+        <div class="field"><label>Rev 1</label><input id="editD1" type="date"/></div>
+        <div class="field"><label>Rev 2</label><input id="editD2" type="date"/></div>
+        <div class="field"><label>Rev 3</label><input id="editD3" type="date"/></div>
+        <div class="field"><label>Rev 4</label><input id="editD4" type="date"/></div>
+        <div class="field"><label>Intermediária</label><input id="editDInt" type="date"/></div>
+        <div class="field"><label>Final</label><input id="editDFin" type="date"/></div>
+      </div>
+
+      <button class="btn-save" id="btnSalvarEdit" onclick="salvarEditar()">Guardar Alterações</button>
+      <button class="btn-cancel" onclick="fecharSheetEdit()">Cancelar</button>
+    </div>
+  </div>
+
   <script>
-    const API_URL   = "https://script.google.com/macros/s/AKfycbx0giuM53xhBwSTGu3A686KDcKOHSy-R1FUHuAPStAsau5rZOdzxHA5eSFpbeiEK90BXg/exec";
-    const CACHE_KEY = "rev_cache_v4";
+    const API_URL   = "COLOQUE_AQUI_A_SUA_URL_DO_WEB_APP";
+    const CACHE_KEY = "rev_cache_v5";
     const CACHE_TTL = 5 * 60 * 1000;
-    const LABELS    = ['R1 · +1d','R2 · +7d','R3 · +14d','R4 · +30d'];
+    const LABELS    = ['R1','R2','R3','R4', 'R. Int', 'R. Fin'];
 
     let dados = [];
     let filtroAtual = 'hoje';
 
-    // INIT
     window.addEventListener('DOMContentLoaded', () => {
       document.getElementById('inpData').value = hojeISO();
       document.getElementById('inpData').addEventListener('change', mostrarPreview);
@@ -275,7 +296,6 @@
       buscarDados(!!cached);
     });
 
-    // CACHE
     function lerCache() {
       try {
         const raw = localStorage.getItem(CACHE_KEY);
@@ -288,7 +308,6 @@
       try { localStorage.setItem(CACHE_KEY, JSON.stringify({ ts: Date.now(), data })); } catch {}
     }
 
-    // FETCH
     async function buscarDados(silencioso = false) {
       const btn = document.getElementById('syncBtn');
       btn.classList.add('spinning');
@@ -298,13 +317,11 @@
         if (!res.ok) throw new Error('HTTP ' + res.status);
         const raw = await res.json();
         if (raw && raw.erro) { mostrarDebug('Erro do servidor: ' + raw.erro); return; }
-        if (!Array.isArray(raw)) { mostrarDebug('Resposta inesperada:\n' + JSON.stringify(raw).slice(0,300)); return; }
         dados = normalizar(raw);
         salvarCache(dados);
         atualizar();
         if (!silencioso) toast("✅ Dados actualizados!");
       } catch (err) {
-        console.error(err);
         if (!silencioso) toast("⚠️ Erro ao carregar");
         mostrarDebug('Erro: ' + err.message);
         if (dados.length === 0) renderErro();
@@ -315,51 +332,53 @@
 
     function sincronizar() { buscarDados(false); }
 
-    // NORMALIZAR — aceita datas ISO (yyyy-MM-dd) e dd/MM/yyyy
     function normalizar(raw) {
       return raw.map(row => ({
-        id:   String(row.id   || row.ID   || ''),
-        nome: String(row.Conteudo || ''),
-        prog: String(row.Status   || '0/4'),
+        id:      String(row.id || row.ID || ''),
+        nome:    String(row.Conteudo || ''),
+        prog:    String(row.Status || '0/6'),
+        dataIni: parseData(row.Data_Ini),
         rev: [
           { data: parseData(row.Data_Rev1), status: String(row.Status_Rev1 || 'Pendente') },
           { data: parseData(row.Data_Rev2), status: String(row.Status_Rev2 || 'Pendente') },
           { data: parseData(row.Data_Rev3), status: String(row.Status_Rev3 || 'Pendente') },
           { data: parseData(row.Data_Rev4), status: String(row.Status_Rev4 || 'Pendente') },
+          { data: parseData(row.Data_RevInt), status: String(row.Status_RevInt || 'Pendente') },
+          { data: parseData(row.Data_RevFinal), status: String(row.Status_RevFinal || 'Pendente') }
         ]
       })).filter(r => r.nome && r.id);
     }
 
-    // DATAS
     function hojeISO() { return new Date().toISOString().split('T')[0]; }
 
-    // Aceita: "2026-03-28" (ISO), "28/03/2026" (PT), Date objects
     function parseData(v) {
       if (!v) return null;
       if (v instanceof Date) return isNaN(v) ? null : v;
       const s = String(v).trim();
-      // formato dd/MM/yyyy
       if (/^\d{2}\/\d{2}\/\d{4}$/.test(s)) {
         const [dd, mm, yyyy] = s.split('/');
         return new Date(yyyy + '-' + mm + '-' + dd + 'T12:00:00');
       }
-      // formato ISO yyyy-MM-dd ou yyyy-MM-ddTHH:...
       const d = new Date(s.length === 10 ? s + 'T12:00:00' : s);
       return isNaN(d) ? null : d;
     }
 
-    function toISO(d)     { return d ? d.toISOString().split('T')[0] : ''; }
-    function fmt(d)       { return d ? d.toLocaleDateString('pt-PT', { day:'2-digit', month:'2-digit' }) : '–'; }
-    function addDias(b,n) { const d = new Date(b); d.setDate(d.getDate() + n); return d; }
-    function isHoje(d)    { return d ? toISO(d) === hojeISO() : false; }
+    function toISO(d)    { return d ? d.toISOString().split('T')[0] : ''; }
+    function fmt(d)      { return d ? d.toLocaleDateString('pt-PT', { day:'2-digit', month:'2-digit' }) : 'S/ Data'; }
+    function addDias(b,n){ const d = new Date(b); d.setDate(d.getDate() + n); return d; }
+    function isHoje(d)   { return d ? toISO(d) === hojeISO() : false; }
     function isAtrasado(d){ return d ? toISO(d) < hojeISO()  : false; }
-    function emDias(d,n)  {
+    function emDias(d,n) {
       if (!d) return false;
       const lim = addDias(new Date(), n);
       return toISO(d) > hojeISO() && toISO(d) <= toISO(lim);
     }
 
-    // ESTADO CARD
+    // Verifica se as R1 até R4 já foram completas
+    function isR4Completo(item) {
+      return item.rev.slice(0, 4).every(r => r.status === 'Feito');
+    }
+
     function estado(item) {
       const pend = item.rev.filter(r => r.status !== 'Feito');
       return {
@@ -369,7 +388,6 @@
       };
     }
 
-    // FILTRO
     function filtrar(el, tipo) {
       document.querySelectorAll('.pill').forEach(p => p.classList.remove('ativo'));
       el.classList.add('ativo');
@@ -379,14 +397,15 @@
 
     function aplicarFiltro(lista) {
       switch (filtroAtual) {
-        case 'hoje':      return lista.filter(i => { const e = estado(i); return e.hoje || e.atrasado; });
-        case 'atrasados': return lista.filter(i => estado(i).atrasado);
-        case 'proximos':  return lista.filter(i => i.rev.some(r => r.status !== 'Feito' && emDias(r.data, 7)));
-        default:          return lista;
+        case 'hoje':          return lista.filter(i => { const e = estado(i); return e.hoje || e.atrasado; });
+        case 'atrasados':     return lista.filter(i => estado(i).atrasado);
+        case 'proximos':      return lista.filter(i => i.rev.some(r => r.status !== 'Feito' && emDias(r.data, 7)));
+        case 'intermediaria': return lista.filter(i => isR4Completo(i) && i.rev[4].status !== 'Feito');
+        case 'final':         return lista.filter(i => isR4Completo(i) && i.rev[4].status === 'Feito' && i.rev[5].status !== 'Feito');
+        default:              return lista;
       }
     }
 
-    // ATUALIZAR
     function atualizar() {
       const comHoje   = dados.filter(i => { const e = estado(i); return e.hoje || e.atrasado; });
       const completos = dados.filter(i => estado(i).completo);
@@ -396,7 +415,6 @@
       renderCards();
     }
 
-    // RENDER
     function renderCards() {
       const lista = aplicarFiltro(dados);
       const el    = document.getElementById('lista');
@@ -405,9 +423,7 @@
         el.innerHTML = `
           <div class="empty">
             <div class="empty-icon">${filtroAtual === 'hoje' ? '🎉' : '🔍'}</div>
-            <div class="empty-txt">${filtroAtual === 'hoje'
-              ? 'Tudo em dia!<br/>Nada para rever hoje.'
-              : 'Nenhum conteúdo nesta categoria.'}</div>
+            <div class="empty-txt">${filtroAtual === 'hoje' ? 'Tudo em dia!<br/>Nada para rever hoje.' : 'Nenhum conteúdo nesta categoria.'}</div>
           </div>`;
         return;
       }
@@ -422,15 +438,14 @@
           const phoje = !feito && isHoje(r.data);
           const patr  = !feito && isAtrasado(r.data);
           const ecls  = feito ? 'feito' : phoje ? 'pend-hoje' : patr ? 'atrasado' : '';
-
+          
           if (feito) {
-            // Botão feito: hover mostra "Desfazer?"
             return `<button class="etapa feito" onclick="desfazerRevisao('${item.id}',${i})">
               <span class="txt-normal">✓ ${LABELS[i]}</span>
               <span class="txt-desfazer">↩ Desfazer?</span>
             </button>`;
           } else {
-            const lbl = LABELS[i] + ' ' + fmt(r.data);
+            const lbl = LABELS[i] + ' · ' + fmt(r.data);
             return `<button class="etapa ${ecls}" onclick="marcarFeito('${item.id}',${i})">${lbl}</button>`;
           }
         }).join('');
@@ -442,12 +457,15 @@
           <div class="card-inner">
             <div class="stripe"></div>
             <div class="card-body">
-              <div class="card-titulo">${item.nome}</div>
+              <div class="card-header">
+                 <h3 class="card-titulo">${item.nome}</h3>
+                 <button class="btn-edit" onclick="abrirEditar('${item.id}')" title="Editar">✏️</button>
+              </div>
               <div class="card-badges">
                 <span class="badge bg-gray">Progresso: ${item.prog}</span>
-                ${atrasado           ? '<span class="badge bg-red">⚠️ Atrasado</span>'    : ''}
-                ${hoje && !atrasado  ? '<span class="badge bg-amber">📅 Hoje</span>'       : ''}
-                ${completo           ? '<span class="badge bg-green">✅ Completo</span>'   : ''}
+                ${atrasado            ? '<span class="badge bg-red">⚠️ Atrasado</span>'    : ''}
+                ${hoje && !atrasado   ? '<span class="badge bg-amber">📅 Hoje</span>'       : ''}
+                ${completo            ? '<span class="badge bg-green">✅ Completo</span>'   : ''}
               </div>
               <div class="etapas">${etapasHTML}</div>
             </div>
@@ -479,14 +497,12 @@
       box.innerHTML = '⚠️ <strong>Diagnóstico:</strong><br/>' + msg.replace(/\n/g,'<br/>');
     }
 
-    // MARCAR FEITO (optimistic)
     async function marcarFeito(id, etapa) {
       alterarStatus(id, etapa, 'Feito');
       toast("✅ Revisão marcada como feita!");
       await enviarStatus(id, etapa, 'marcar');
     }
 
-    // DESFAZER (optimistic)
     async function desfazerRevisao(id, etapa) {
       alterarStatus(id, etapa, 'Pendente');
       toast("↩ Revisão desfeita!");
@@ -497,7 +513,7 @@
       const item = dados.find(d => d.id === id);
       if (!item) return;
       item.rev[etapa].status = novoStatus;
-      item.prog = item.rev.filter(r => r.status === 'Feito').length + '/4';
+      item.prog = item.rev.filter(r => r.status === 'Feito').length + '/6';
       salvarCache(dados);
       atualizar();
     }
@@ -505,15 +521,14 @@
     async function enviarStatus(id, etapa, action) {
       try {
         await fetch(API_URL, {
-          method: 'POST',
-          mode: 'no-cors',
+          method: 'POST', mode: 'no-cors',
           headers: { 'Content-Type': 'text/plain' },
           body: JSON.stringify({ action, id, etapa })
         });
       } catch { toast("⚠️ Erro ao guardar no servidor"); }
     }
 
-    // SHEET
+    // SHEET NOVO
     function abrirSheet() {
       document.getElementById('overlay').classList.add('show');
       setTimeout(() => document.getElementById('inpNome').focus(), 80);
@@ -534,7 +549,6 @@
       box.style.display = 'block';
     }
 
-    // SALVAR
     async function salvar() {
       const nome = document.getElementById('inpNome').value.trim();
       const data = document.getElementById('inpData').value;
@@ -562,7 +576,68 @@
       }
     }
 
-    // TOAST
+    // EDITAR NOVO
+    function abrirEditar(id) {
+      const item = dados.find(d => d.id === id);
+      if(!item) return;
+
+      document.getElementById('editId').value = id;
+      document.getElementById('editNome').value = item.nome;
+      document.getElementById('editDataIni').value = toISO(item.dataIni) || '';
+      document.getElementById('editD1').value = toISO(item.rev[0].data) || '';
+      document.getElementById('editD2').value = toISO(item.rev[1].data) || '';
+      document.getElementById('editD3').value = toISO(item.rev[2].data) || '';
+      document.getElementById('editD4').value = toISO(item.rev[3].data) || '';
+      document.getElementById('editDInt').value = toISO(item.rev[4].data) || '';
+      document.getElementById('editDFin').value = toISO(item.rev[5].data) || '';
+
+      document.getElementById('overlayEdit').classList.add('show');
+    }
+
+    function fecharSheetEdit() { document.getElementById('overlayEdit').classList.remove('show'); }
+    function fecharBgEdit(e)   { if (e.target === document.getElementById('overlayEdit')) fecharSheetEdit(); }
+
+    async function salvarEditar() {
+      const id = document.getElementById('editId').value;
+      const nome = document.getElementById('editNome').value.trim();
+      if(!nome) return toast("⚠️ O nome é obrigatório!");
+
+      const payload = {
+        action: 'editar', id, nome,
+        dIni: document.getElementById('editDataIni').value,
+        d1: document.getElementById('editD1').value,
+        d2: document.getElementById('editD2').value,
+        d3: document.getElementById('editD3').value,
+        d4: document.getElementById('editD4').value,
+        dInt: document.getElementById('editDInt').value,
+        dFin: document.getElementById('editDFin').value
+      };
+
+      const item = dados.find(d => d.id === id);
+      item.nome = nome;
+      item.dataIni = parseData(payload.dIni);
+      item.rev[0].data = parseData(payload.d1);
+      item.rev[1].data = parseData(payload.d2);
+      item.rev[2].data = parseData(payload.d3);
+      item.rev[3].data = parseData(payload.d4);
+      item.rev[4].data = parseData(payload.dInt);
+      item.rev[5].data = parseData(payload.dFin);
+      salvarCache(dados);
+      atualizar();
+
+      fecharSheetEdit();
+      toast("✅ Guardando alterações...");
+
+      try {
+        await fetch(API_URL, {
+          method: 'POST', mode: 'no-cors',
+          headers: { 'Content-Type': 'text/plain' },
+          body: JSON.stringify(payload)
+        });
+        setTimeout(() => buscarDados(true), 1500);
+      } catch (e) { toast("❌ Erro ao guardar."); }
+    }
+
     function toast(msg) {
       const el = document.getElementById('toast');
       el.textContent = msg;
