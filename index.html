@@ -23,6 +23,8 @@
       --blue:      #1d4ed8;
       --radius:    12px;
       --shadow:    0 1px 4px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04);
+      --crimson:   #dc143c; /* Nova cor para Int/Fin */
+      --crimson-lt:#fae6ea;
     }
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -73,13 +75,14 @@
     .sub-filtros { display: none; gap: 6px; overflow-x: auto; padding-bottom: 14px; margin-top: -4px; scrollbar-width: none; }
     .sub-filtros::-webkit-scrollbar { display: none; }
     .sub-filtros.show { display: flex; }
+    
+    /* Toggle buttons p/ múltipla escolha */
     .sub-pill {
-      padding: 4px 12px; border-radius: 8px; border: 1px solid var(--border);
+      padding: 4px 12px; border-radius: 8px; border: 1.5px solid var(--border);
       background: var(--surface); color: var(--muted); font-size: 0.72rem; font-weight: 700;
-      cursor: pointer; white-space: nowrap; transition: 0.2s;
+      cursor: pointer; white-space: nowrap; transition: 0.2s; opacity: 0.6;
     }
-    .sub-pill:hover { border-color: var(--accent); color: var(--accent); }
-    .sub-pill.ativo { background: var(--accent-lt); border-color: var(--accent); color: var(--accent); }
+    .sub-pill.ativo { opacity: 1; border-color: var(--blue); color: var(--blue); background: #eff6ff; }
 
     .lista { padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; }
 
@@ -124,17 +127,25 @@
     }
     .etapa:not(.feito):hover { border-color: var(--accent); color: var(--accent); background: var(--accent-lt); }
 
+    /* Estilos base para estados */
     .etapa.pend-hoje  { border-color: #fbbf24; background: var(--amber-lt); color: var(--amber); }
     .etapa.atrasado   { border-color: #fca5a5; background: var(--red-lt);   color: var(--red); }
 
-    .etapa.feito {
-      border-color: #bbf7d0; background: var(--accent-lt); color: var(--accent); cursor: pointer;
-    }
+    .etapa.feito { border-color: #bbf7d0; background: var(--accent-lt); color: var(--accent); cursor: pointer; }
+    
+    /* Nova Regra: Estilo Feito p/ Etapas Especiais (Int/Fin) -> Vermelho */
+    .etapa.especial:not(.feito):hover { border-color: var(--crimson); color: var(--crimson); background: var(--crimson-lt); }
+    .etapa.especial.feito { border-color: #fca5a5; background: var(--crimson-lt); color: var(--crimson); }
+    
     .etapa.feito .txt-normal  { display: inline; }
     .etapa.feito .txt-desfazer { display: none; }
+    
+    /* Hover desfazer base */
     .etapa.feito:hover { border-color: var(--red); background: var(--red-lt); color: var(--red); }
     .etapa.feito:hover .txt-normal  { display: none; }
     .etapa.feito:hover .txt-desfazer { display: inline; }
+    /* Hover desfazer p/ especial */
+    .etapa.especial.feito:hover { border-color: var(--text); background: var(--border); color: var(--text); }
 
     .empty { text-align: center; padding: 56px 20px; color: var(--muted); }
     .empty-icon { font-size: 2.6rem; margin-bottom: 10px; }
@@ -231,9 +242,8 @@
     </div>
     
     <div class="sub-filtros" id="subFiltros">
-      <button class="sub-pill ativo" onclick="mudarSubFiltro(this, 'pendente')">⏳ Pendentes</button>
-      <button class="sub-pill" onclick="mudarSubFiltro(this, 'r4_ok')">✅ Já fizeram as 4 revisões</button>
-      <button class="sub-pill" onclick="mudarSubFiltro(this, 'todos')">📚 Todos os conteúdos</button>
+      <button class="sub-pill ativo" id="btnFaltaRev" onclick="toggleFiltro('falta_revisar')">⏳ Falta Revisar</button>
+      <button class="sub-pill" id="btnJaRev" onclick="toggleFiltro('ja_revisado')">✅ Já Revisado</button>
     </div>
   </header>
 
@@ -247,7 +257,7 @@
       <div class="handle"></div>
       <h2>Novo estudo</h2>
       <div class="field">
-        <label>O você estudou?</label>
+        <label>O que estudou?</label>
         <input id="inpNome" type="text" placeholder="Ex: Termodinâmica — Cap. 4" />
       </div>
       <div class="field">
@@ -293,13 +303,18 @@
 
   <script>
     const API_URL   = "https://script.google.com/macros/s/AKfycbx0giuM53xhBwSTGu3A686KDcKOHSy-R1FUHuAPStAsau5rZOdzxHA5eSFpbeiEK90BXg/exec";
-    const CACHE_KEY = "rev_cache_v7";
+    const CACHE_KEY = "rev_cache_v8";
     const CACHE_TTL = 5 * 60 * 1000;
     const LABELS    = ['R1','R2','R3','R4', 'R. Int', 'R. Fin'];
 
     let dados = [];
     let filtroAtual = 'hoje';
-    let subFiltroAtual = 'pendente';
+    
+    // Estado dos Toggles (Inicia com "Falta Revisar" ativo)
+    let statesSubFiltro = {
+      falta_revisar: true,
+      ja_revisado: false
+    };
 
     window.addEventListener('DOMContentLoaded', () => {
       document.getElementById('inpData').value = hojeISO();
@@ -334,7 +349,7 @@
         dados = normalizar(raw);
         salvarCache(dados);
         atualizar();
-        if (!silencioso) toast("✅ Dados atualizados!");
+        if (!silencioso) toast("✅ Dados actualizados!");
       } catch (err) {
         if (!silencioso) toast("⚠️ Erro ao carregar");
         mostrarDebug('Erro: ' + err.message);
@@ -350,7 +365,7 @@
       return raw.map(row => ({
         id:      String(row.id || row.ID || ''),
         nome:    String(row.Conteudo || ''),
-        prog:    String(row.Status || '0/6'),
+        prog:    String(row.Status || '0/4'), // Max 4
         dataIni: parseData(row.Data_Ini),
         rev: [
           { data: parseData(row.Data_Rev1), status: String(row.Status_Rev1 || 'Pendente') },
@@ -393,7 +408,7 @@
     }
 
     function estado(item) {
-      const pend = item.rev.filter(r => r.status !== 'Feito');
+      const pend = item.rev.slice(0, 4).filter(r => r.status !== 'Feito');
       return {
         atrasado: item.rev.slice(0,4).some(r => r.status !== 'Feito' && isAtrasado(r.data)),
         hoje:     item.rev.slice(0,4).some(r => r.status !== 'Feito' && isHoje(r.data)),
@@ -415,10 +430,16 @@
       renderCards();
     }
 
-    function mudarSubFiltro(el, subTipo) {
-      document.querySelectorAll('.sub-pill').forEach(p => p.classList.remove('ativo'));
-      el.classList.add('ativo');
-      subFiltroAtual = subTipo;
+    // Toggle: Liga/desliga botão e força render
+    function toggleFiltro(tipo) {
+      statesSubFiltro[tipo] = !statesSubFiltro[tipo]; // inverte estado
+      
+      const btnFalta = document.getElementById('btnFaltaRev');
+      const btnJa    = document.getElementById('btnJaRev');
+      
+      if(statesSubFiltro.falta_revisar) btnFalta.classList.add('ativo'); else btnFalta.classList.remove('ativo');
+      if(statesSubFiltro.ja_revisado)   btnJa.classList.add('ativo');    else btnJa.classList.remove('ativo');
+      
       renderCards();
     }
 
@@ -429,12 +450,18 @@
 
         return lista.filter(item => {
           const r4Ok = isR4Completo(item);
-          const pendenteAtual = item.rev[revIndex].status !== 'Feito';
-
-          if (subFiltroAtual === 'todos') return true;
-          if (subFiltroAtual === 'r4_ok') return r4Ok;
-          if (subFiltroAtual === 'pendente') return r4Ok && pendenteAtual;
-          return true;
+          if (!r4Ok) return false; // Se não fez as 4, não entra aqui
+          
+          const isPendenteAtual = item.rev[revIndex].status !== 'Feito';
+          
+          // Se nenhum botão está ligado, não mostra nada
+          if (!statesSubFiltro.falta_revisar && !statesSubFiltro.ja_revisado) return false;
+          // Se os dois estão ligados, mostra tudo dessa aba
+          if (statesSubFiltro.falta_revisar && statesSubFiltro.ja_revisado) return true;
+          
+          // Se só um está ligado
+          if (statesSubFiltro.falta_revisar) return isPendenteAtual;
+          if (statesSubFiltro.ja_revisado) return !isPendenteAtual;
         });
       }
 
@@ -463,7 +490,7 @@
         el.innerHTML = `
           <div class="empty">
             <div class="empty-icon">${filtroAtual === 'hoje' ? '🎉' : '🔍'}</div>
-            <div class="empty-txt">${filtroAtual === 'hoje' ? 'Tudo em dia!<br/>Nada para rever hoje.' : 'Nenhum conteúdo nesta categoria.'}</div>
+            <div class="empty-txt">${filtroAtual === 'hoje' ? 'Tudo em dia!<br/>Nada para rever hoje.' : 'Nenhum conteúdo.'}</div>
           </div>`;
         return;
       }
@@ -475,19 +502,27 @@
 
         const etapasHTML = item.rev.map((r, i) => {
           const feito = r.status === 'Feito';
-          const phoje = !feito && r.data && isHoje(r.data);
-          const patr  = !feito && r.data && isAtrasado(r.data);
-          const ecls  = feito ? 'feito' : phoje ? 'pend-hoje' : patr ? 'atrasado' : '';
+          const isEspecial = (i === 4 || i === 5);
           
-          const labelCompleta = (i === 4 || i === 5) ? LABELS[i] : `${LABELS[i]} · ${fmt(r.data)}`;
+          const phoje = !isEspecial && !feito && r.data && isHoje(r.data);
+          const patr  = !isEspecial && !feito && r.data && isAtrasado(r.data);
+          
+          // Atribui classes (incluindo "especial" para cor vermelha)
+          let ecls = '';
+          if (feito) ecls += 'feito ';
+          if (isEspecial) ecls += 'especial ';
+          if (phoje) ecls += 'pend-hoje ';
+          if (patr)  ecls += 'atrasado ';
+          
+          const labelCompleta = isEspecial ? LABELS[i] : `${LABELS[i]} · ${fmt(r.data)}`;
 
           if (feito) {
-            return `<button class="etapa feito" onclick="desfazerRevisao('${item.id}',${i})">
+            return `<button class="etapa ${ecls.trim()}" onclick="desfazerRevisao('${item.id}',${i})">
               <span class="txt-normal">✓ ${LABELS[i]}</span>
               <span class="txt-desfazer">↩ Desfazer?</span>
             </button>`;
           } else {
-            return `<button class="etapa ${ecls}" onclick="marcarFeito('${item.id}',${i})">${labelCompleta}</button>`;
+            return `<button class="etapa ${ecls.trim()}" onclick="marcarFeito('${item.id}',${i})">${labelCompleta}</button>`;
           }
         }).join('');
 
@@ -506,7 +541,7 @@
                 <span class="badge bg-gray">Progresso: ${item.prog}</span>
                 ${atrasado            ? '<span class="badge bg-red">⚠️ Atrasado</span>'    : ''}
                 ${hoje && !atrasado   ? '<span class="badge bg-amber">📅 Hoje</span>'       : ''}
-                ${completo            ? '<span class="badge bg-green">✅ Completo</span>'   : ''}
+                ${completo            ? '<span class="badge bg-green">✅ R1-R4 Completo</span>'   : ''}
               </div>
               <div class="etapas">${etapasHTML}</div>
             </div>
@@ -554,7 +589,7 @@
       const item = dados.find(d => d.id === id);
       if (!item) return;
       item.rev[etapa].status = novoStatus;
-      item.prog = item.rev.filter(r => r.status === 'Feito').length + '/6';
+      item.prog = item.rev.slice(0, 4).filter(r => r.status === 'Feito').length + '/4'; // Progresso /4
       salvarCache(dados);
       atualizar();
     }
@@ -671,30 +706,24 @@
       } catch (e) { toast("❌ Erro ao Salvar."); }
     }
 
-    // ── FUNÇÃO DE EXCLUSÃO (NOVA) ──────────────────────────────────
     async function excluirAssunto() {
       const id = document.getElementById('editId').value;
-      
-      // Pede confirmação antes de excluir
       if (!confirm("Tem a certeza que deseja excluir este assunto? Esta ação não pode ser desfeita.")) {
         return;
       }
 
-      // Remove da interface imediatamente (optimistic UI)
       dados = dados.filter(d => d.id !== id);
       salvarCache(dados);
       atualizar();
       fecharSheetEdit();
       toast("🗑️ Assunto excluído!");
 
-      // Manda a instrução de excluir para o servidor
       try {
         await fetch(API_URL, {
           method: 'POST', mode: 'no-cors',
           headers: { 'Content-Type': 'text/plain' },
           body: JSON.stringify({ action: 'excluir', id: id })
         });
-        // Atualiza os dados novamente após a deleção para garantir o sincronismo
         setTimeout(() => buscarDados(true), 1500);
       } catch (e) {
         toast("❌ Erro ao excluir no servidor.");
